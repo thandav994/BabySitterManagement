@@ -17,7 +17,7 @@ public class BabySitterEntity {
 	private int sitterID;
 	
 	@OneToOne
-	@JoinColumn(name = "userid")
+	@JoinColumn(name = "emailID")
 	private LoginEntity login;
 	private String firstName;
 	private String lastName;

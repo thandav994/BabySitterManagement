@@ -15,9 +15,8 @@ import javax.persistence.TemporalType;
 public class ParentEntity {
 	@Id
 	private int parentID;
-	
 	@OneToOne
-	@JoinColumn(name = "userid")
+	@JoinColumn(name = "emailID")
 	private LoginEntity login;
 	private String firstName;
 	private String lastName;
