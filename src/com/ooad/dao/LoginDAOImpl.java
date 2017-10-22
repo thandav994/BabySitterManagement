@@ -3,12 +3,14 @@ package com.ooad.dao;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.query.Query;
 
 import com.ooad.beans.Login;
 import com.ooad.beans.User;
@@ -88,6 +90,7 @@ public class LoginDAOImpl implements LoginDAO{
 		
 		session.beginTransaction();
 		ParentEntity parent = new ParentEntity();
+		
 		parent.setFirstName(user.getFirstName());
 		parent.setLastName(user.getLastName());
 		parent.setGender(user.getGender());
@@ -103,8 +106,6 @@ public class LoginDAOImpl implements LoginDAO{
 		session.getTransaction().commit();
 		session.close();
 		sessionFactory.close();
-
-
 	}
 
 	public boolean isExistingUser(Login login) {
@@ -117,24 +118,31 @@ public class LoginDAOImpl implements LoginDAO{
 		Session session = sessionFactory.openSession();
 		
 		session.beginTransaction();
-		LoginEntity loginEntity = session.get(LoginEntity.class, login.getUserID());
-		
-//		Query<BabySitterEntity> q = session.createQuery("from BabySitterEntity sitter where sitter.userID = :userId");
-//        q.setString("userId", login.getUserID());
-//		BabySitterEntity sitter = q.getSingleResult();
-//		if(sitter != null)
-//			isExisting= true;
-//		Query<ParentEntity> p = session.createQuery("from ParentEntity parent where parent.userID = :userId");
-//        p.setString("userId", login.getUserID());
-//		ParentEntity parent = p.getSingleResult();
-//		if(parent != null)
-//			isExisting = true;
-		
-		if(loginEntity !=null) {
-			if(loginEntity.getPass().contentEquals(login.getPassword())) {
+		// Checking if the category is right
+		if(login.getCategory().equals("babysitter")) {
+			@SuppressWarnings("unchecked")
+			Query<BabySitterEntity> query1 = session.createQuery("from BabySitterEntity sitter where sitter.login.user_id = :userId");
+	        query1.setParameter("userId", login.getUserID());
+			List<BabySitterEntity> sitter = query1.getResultList();
+			if(!sitter.isEmpty())
 				isExisting= true;
+		} else {
+			@SuppressWarnings("unchecked")
+			Query<ParentEntity> query2 = session.createQuery("from ParentEntity parent where parent.login.user_id = :userId");
+	        query2.setParameter("userId", login.getUserID());
+			List<ParentEntity> parent = query2.getResultList();
+			if(!parent.isEmpty())
+				isExisting= true;
+		}
+		
+		// Checking if the password is right
+		LoginEntity loginEntity = session.get(LoginEntity.class, login.getUserID());
+		if(loginEntity !=null) {
+			if(!loginEntity.getPass().contentEquals(login.getPassword())) {
+				isExisting= false;
 			}
 		}
+		
 		session.close();
 		sessionFactory.close();
 

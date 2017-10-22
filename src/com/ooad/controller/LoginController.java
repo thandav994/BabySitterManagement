@@ -46,9 +46,8 @@ public class LoginController {
 	public ModelAndView login() {
 		// Creating login DAO object in order to persist the data in the database
 		ModelAndView modelAndView = new ModelAndView("login");
-		if(modelAndView.getModel().get("errorMessage") != null) {
+		if(modelAndView.getModel().get("errorMessage") != null)
 			modelAndView.getModel().put("errorMessage", null);
-		}
 		return modelAndView;
 	}
 	
@@ -58,12 +57,12 @@ public class LoginController {
 		LoginDAOImpl loginDAO = new LoginDAOImpl();
 		boolean isExistingUser = loginDAO.isExistingUser(login);
 		ModelAndView modelAndView = null;
-		if(isExistingUser)
+		if(isExistingUser) {
 			if(login.getCategory().contentEquals("parent"))
 				modelAndView = new ModelAndView("Listofbabysitters");
 			else if(login.getCategory().contentEquals("babysitter"))
 				modelAndView = new ModelAndView("babysittershome");
-		else {
+		} else {
 			modelAndView = new ModelAndView("login");
 			modelAndView.addObject("errorMessage", "No profile found with the given credentials");
 		}
