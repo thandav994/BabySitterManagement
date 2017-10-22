@@ -12,7 +12,6 @@ import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.query.Query;
 
-import com.ooad.beans.Login;
 import com.ooad.beans.User;
 import com.ooad.entities.BabySitterEntity;
 import com.ooad.entities.LoginEntity;
@@ -108,7 +107,7 @@ public class LoginDAOImpl implements LoginDAO{
 		sessionFactory.close();
 	}
 
-	public boolean isExistingUser(Login login) {
+	public boolean isExistingUser(User user) {
 		// TODO Auto-generated method stub
 		
 		boolean isExisting = false;
@@ -119,26 +118,40 @@ public class LoginDAOImpl implements LoginDAO{
 		
 		session.beginTransaction();
 		// Checking if the category is right
-		if(login.getCategory().equals("babysitter")) {
+		if(user.getCategory().equals("babysitter")) {
 			@SuppressWarnings("unchecked")
 			Query<BabySitterEntity> query1 = session.createQuery("from BabySitterEntity sitter where sitter.login.user_id = :userId");
-	        query1.setParameter("userId", login.getUserID());
-			List<BabySitterEntity> sitter = query1.getResultList();
-			if(!sitter.isEmpty())
+	        query1.setParameter("userId", user.getEmail());
+			List<BabySitterEntity> sitters = query1.getResultList();
+			
+			// Setting all the details in the object if it is an existing user
+			if(!sitters.isEmpty()) {
+				BabySitterEntity sitter = sitters.get(0);
 				isExisting= true;
+				user.setFirstName(sitter.getFirstName());
+				user.setLastName(sitter.getLastName());
+				user.setBirthday(sitter.getDateOfBirth().toString());
+				user.setGender(sitter.getGender());
+			}
 		} else {
 			@SuppressWarnings("unchecked")
 			Query<ParentEntity> query2 = session.createQuery("from ParentEntity parent where parent.login.user_id = :userId");
-	        query2.setParameter("userId", login.getUserID());
-			List<ParentEntity> parent = query2.getResultList();
-			if(!parent.isEmpty())
+	        query2.setParameter("userId", user.getEmail());
+			List<ParentEntity> parents = query2.getResultList();
+			if(!parents.isEmpty()) {
+				ParentEntity parent = parents.get(0);
 				isExisting= true;
+				user.setFirstName(parent.getFirstName());
+				user.setLastName(parent.getLastName());
+				user.setBirthday(parent.getDateOfBirth().toString());
+				user.setGender(parent.getGender());
+			}
 		}
 		
 		// Checking if the password is right
-		LoginEntity loginEntity = session.get(LoginEntity.class, login.getUserID());
+		LoginEntity loginEntity = session.get(LoginEntity.class, user.getEmail());
 		if(loginEntity !=null) {
-			if(!loginEntity.getPass().contentEquals(login.getPassword())) {
+			if(!loginEntity.getPass().contentEquals(user.getPassword())) {
 				isExisting= false;
 			}
 		}

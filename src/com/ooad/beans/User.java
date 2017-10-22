@@ -1,5 +1,12 @@
 package com.ooad.beans;
 
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
+import com.ooad.dao.LoginDAOImpl;
+
+@Component
+@Scope("session")
 public class User {
 	private String email;
 	private String password;
@@ -51,6 +58,14 @@ public class User {
 	}
 	public void setGender(String gender) {
 		this.gender = gender;
-	}	
+	}
+	public boolean login() {
+		LoginDAOImpl loginDAO = new LoginDAOImpl();
+		boolean isExistingUser = loginDAO.isExistingUser(this);
+		if(isExistingUser)
+			return true;
+		return false;
+		
+	}
 	
 }
