@@ -7,7 +7,7 @@
 	<head>
 <title>Home</title>
 <meta charset="utf-8">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/css/style.css" />
 <meta name="viewport" content="width=device-width, initial-scale=1">
     
 </head>
@@ -25,11 +25,9 @@
 <h1>The below table displays the list of babysitters </h1>
       <div class="column side"></div>
   <div class="column middle" style="background-color:#bbb;">
-<c:if test="${not empty lists}">
-    <c:forEach items="${lists}" var="item">
-      <div class="contentlist"> <a href = "#"> SHREYASH MANE<br>Work Ex: 2 years<br> Skills: Singing, Dancing, Sports. </a> </div><br><br><br>
-              <div class="contentlist"> <a href = "#"> THANDAV<br>Work Ex: 4 years<br> Skills: Musician, Dancing, Sports. </a> </div>
-
+<c:if test="${not empty sitters}">
+    <c:forEach items="${sitters}" var="sitter">
+      <div class="contentlist"> <a href = "#">"${sitter.firstName} ${sitter.lastName}"<br>Work Ex: 2 years<br> Skills: Singing, Dancing, Sports. </a> </div><br><br><br>
 </c:forEach>
 </c:if>	
 </div>

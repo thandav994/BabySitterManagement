@@ -19,7 +19,7 @@ import com.ooad.dao.LoginDAOImpl;
 public class LoginController {
 	
 	@RequestMapping(value= "/addUser", method = RequestMethod.POST)
-	public String addUser(@ModelAttribute("user")User user) {
+	public String addUser(User user) {
 		// Creating login DAO object in order to persist the data in the database
 		LoginDAOImpl loginDAO = new LoginDAOImpl();
 		try {

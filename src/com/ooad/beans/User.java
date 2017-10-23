@@ -1,12 +1,7 @@
 package com.ooad.beans;
 
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
-
 import com.ooad.dao.LoginDAOImpl;
 
-@Component
-@Scope("session")
 public class User {
 	private String email;
 	private String password;

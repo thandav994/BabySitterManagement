@@ -23,8 +23,9 @@
   <div class="column middle">
     <h2>Login</h2>
     <form method="post" action="/BabySitterManagement/login">
-    <div>        <label for="parents">Login for Parents</label>        <input type="radio" name="category" id="parent" value="parent" />
-        <label for="babysitter">Login for Babysitters</label>        <input type="radio" name="category" id="babysitter" value="babysitter" />
+    <div>
+    	<label for="parents">Login for Parents</label><input type="radio" name="category" id="parent" value="parent" />
+        <label for="babysitter">Login for Babysitters</label><input type="radio" name="category" id="babysitter" value="babysitter" />
      </div>
     <div>
       <label for="email">Enter your Email:</label>

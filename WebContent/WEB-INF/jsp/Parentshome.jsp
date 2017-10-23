@@ -13,8 +13,8 @@ not displayed. The information between the BODY and /BODY tags is displayed.-->
 <h1>Hello parents,Welcome!</h1>
 <h2>You can view the list of available babysitters. </h2>
 <p> Enter the date when you would like to hire a babysitter:</p>
-<input type="text" placeholder="MM/DD/YYYY" name="date" maxlength=10><br>
-<form action="http://google.com">
+<form action="/BabySitterManagement/Listofbabysitters" method="get">
+	<input required="required" type="date" name="appointmentDate"><br>
     <input type="submit" value="Submit" />
 </form>
 </body>

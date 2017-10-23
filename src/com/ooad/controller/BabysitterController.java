@@ -1,7 +1,7 @@
 package com.ooad.controller;
 
-import com.ooad.beans.Appointment;
-import com.ooad.beans.User;
+//import com.ooad.beans.Appointment;
+//import com.ooad.beans.User;
 
 public class BabysitterController {
 
