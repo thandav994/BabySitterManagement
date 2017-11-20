@@ -3,9 +3,11 @@ package com.ooad.dao;
 import java.text.ParseException;
 
 import com.ooad.beans.Appointment;
+import com.ooad.beans.Parent;
 import com.ooad.beans.User;
 
-public interface BabySitterDAO {
-	public Appointment[] GetListOfAppointments(User user) throws ParseException;
-	public void UpdateBabySitterApproval(Appointment appointment, Boolean approval) throws ParseException;
+public interface BabysitterDAO {
+	public Appointment[] getListOfAppointments(User user);
+	public void saveAppointment(Appointment appointment);
+	public Parent getParentInfo(int parentID);
 }

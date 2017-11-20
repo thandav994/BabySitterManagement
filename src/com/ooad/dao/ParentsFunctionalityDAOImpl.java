@@ -12,7 +12,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.query.Query;
 
-import com.ooad.beans.BabySitter;
+import com.ooad.beans.*;
 import com.ooad.entities.AppointmentEntity;
 import com.ooad.entities.BabySitterEntity;
 
@@ -47,7 +47,7 @@ public class ParentsFunctionalityDAOImpl implements ParentsFunctionalityDAO {
 		return sitterslist;
 	}
 
-	public ArrayList<BabySitter> getSitterInformation() {
+	public BabySitter getSitterInformation() {
 		// TODO Auto-generated method stub
 		return null;
 	}

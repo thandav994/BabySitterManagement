@@ -13,14 +13,27 @@ import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.criterion.Restrictions;
 
-import com.ooad.beans.Appointment;
-import com.ooad.beans.AppointmentStatus;
-import com.ooad.beans.User;
-import com.ooad.entities.AppointmentEntity;
+import com.ooad.beans.*;
+import com.ooad.entities.*;
 
-public class BabysitterDAOImpl {
+public class BabysitterDAOImpl implements BabysitterDAO {
 	
-	public Appointment[] GetListOfAppointments(User user) throws ParseException {
+	private AppointmentStatus getAppointmentStatus (int index) {
+		AppointmentStatus curStatus;
+		if (AppointmentStatus.Accepted.ordinal() == index) {
+			curStatus = AppointmentStatus.Accepted;
+		} else if (AppointmentStatus.Completed.ordinal() == index) {
+			curStatus = AppointmentStatus.Completed;
+		} else if (AppointmentStatus.Pending.ordinal() == index) {
+			curStatus = AppointmentStatus.Pending;
+		} else {
+			curStatus = AppointmentStatus.Rejected;
+		}
+		return curStatus;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public Appointment[] getListOfAppointments(User user) {
 
 		SessionFactory sessionFactory = new Configuration()
 	               .configure("hibernate.cfg.xml").buildSessionFactory();
@@ -35,13 +48,24 @@ public class BabysitterDAOImpl {
 		session.close();
 		sessionFactory.close();
 		
-		if (appointments != null)
-			return (Appointment[]) appointments.toArray();
+		if (appointments != null) {
+			Appointment[] list = new Appointment[appointments.size()];
+			for (int i = 0; i < appointments.size(); i++) {
+				AppointmentEntity cur = appointments.get(0);
+				list[i].setId(cur.getId());
+				list[i].setStatus(getAppointmentStatus(cur.getStatus()));
+				list[i].setStartDate(cur.getStartDate());
+				list[i].setEndDate(cur.getEndDate());
+				list[i].setBabysitterID(cur.getBabysitter().getSitterID());
+				list[i].setParentID(cur.getParent().getParentID());
+			}
+			return list;
+		}
 		else
 			return null;
 	}
 	
-	public void UpdateBabySitterApproval(Appointment appointment, Boolean approval) throws ParseException {
+	public void saveAppointment(Appointment appointment) {
 		
 		SessionFactory sessionFactory = new Configuration()
 	               .configure("hibernate.cfg.xml").buildSessionFactory();
@@ -53,17 +77,36 @@ public class BabysitterDAOImpl {
 		
 		if(appEntity != null && appEntity.getStatus()==AppointmentStatus.Pending.ordinal()) {
 			//Update status
-			if(approval) {
-				appEntity.setStatus(AppointmentStatus.Accepted.ordinal());
-			} else {
-				appEntity.setStatus(AppointmentStatus.Rejected.ordinal());
-			}
+			AppointmentStatus curStatus = appointment.getStatus();
+			appEntity.setStatus(curStatus.ordinal());
 		}
 		
 		session.save(appEntity);
 		session.getTransaction().commit();
 		session.close();
 		sessionFactory.close();
-
+	}
+	
+	public Parent getParentInfo(int parentID) {
+		
+		SessionFactory sessionFactory = new Configuration()
+	               .configure("hibernate.cfg.xml").buildSessionFactory();
+		Session session = sessionFactory.openSession();
+		
+		session.beginTransaction();
+		
+		ParentEntity parent = session.get(ParentEntity.class, parentID);
+		
+		session.close();
+		sessionFactory.close();
+		
+		if (parent != null) {
+			Parent p = new Parent();
+			//TODO Fill data
+			return p;
+			
+		} else {
+			return null;
+		}
 	}
 }
