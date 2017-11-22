@@ -3,6 +3,7 @@ package com.ooad.beans;
 import com.ooad.dao.LoginDAOImpl;
 
 public class User {
+	private int id;
 	private String email;
 	private String password;
 	private String category;
@@ -11,7 +12,12 @@ public class User {
 	private String birthday;
 	private String gender;
 	
-	
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
 	public String getPassword() {
 		return password;
 	}
@@ -62,5 +68,6 @@ public class User {
 		return false;
 		
 	}
+
 	
 }

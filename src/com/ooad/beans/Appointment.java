@@ -8,12 +8,22 @@ public class Appointment {
 	
 	private int id;
 	private AppointmentStatus status;
-	private Date startDate;
-	private Date endDate;
+	private Date date;
 	private int babysitterID;
 	private int parentID;
 	private Parent parent;
 	private BabySitter babysitter;
+	
+	public Appointment() {
+		
+	}
+	
+	public Appointment (int babysitterID, int parentID, Date date, AppointmentStatus status) {
+		this.babysitterID = babysitterID;
+		this.parentID = parentID;
+		this.date = date;
+		this.status = status;
+	}
 
 	public AppointmentStatus getStatus() {
 		return status;
@@ -31,20 +41,12 @@ public class Appointment {
 		this.id = id;
 	}
 
-	public Date getStartDate() {
-		return startDate;
+	public Date getDate() {
+		return date;
 	}
 
-	public void setStartDate(Date startDate) {
-		this.startDate = startDate;
-	}
-
-	public Date getEndDate() {
-		return endDate;
-	}
-
-	public void setEndDate(Date endDate) {
-		this.endDate = endDate;
+	public void setDate(Date startDate) {
+		this.date = startDate;
 	}
 
 	public int getBabysitterID() {
@@ -64,15 +66,16 @@ public class Appointment {
 	}
 	
 	public BabySitter getBabysitter() {
-		BabySitter temp = null;
-		//TODO Fetch from database
-		return temp;
+		if (babysitter == null) {
+			//TODO Fetch from database
+		}
+		return babysitter;
 	}
 
 	public Parent getParent() {
 		if (parent == null) {
 			BabysitterDAOImpl daoObj = new BabysitterDAOImpl();
-			parent = daoObj.GetParentInfo(parentID);
+			parent = daoObj.getParentInfo(parentID);
 		}
 		return parent;
 	}

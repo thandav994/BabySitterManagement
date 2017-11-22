@@ -2,6 +2,7 @@ package com.ooad.dao;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -33,7 +34,7 @@ public class BabysitterDAOImpl implements BabysitterDAO {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public Appointment[] getListOfAppointments(User user) {
+	public ArrayList<Appointment> getListOfAppointments(BabySitter user) {
 
 		SessionFactory sessionFactory = new Configuration()
 	               .configure("hibernate.cfg.xml").buildSessionFactory();
@@ -49,15 +50,16 @@ public class BabysitterDAOImpl implements BabysitterDAO {
 		sessionFactory.close();
 		
 		if (appointments != null) {
-			Appointment[] list = new Appointment[appointments.size()];
+			ArrayList<Appointment> list = new ArrayList<Appointment>();
 			for (int i = 0; i < appointments.size(); i++) {
 				AppointmentEntity cur = appointments.get(0);
-				list[i].setId(cur.getId());
-				list[i].setStatus(getAppointmentStatus(cur.getStatus()));
-				list[i].setStartDate(cur.getStartDate());
-				list[i].setEndDate(cur.getEndDate());
-				list[i].setBabysitterID(cur.getBabysitter().getSitterID());
-				list[i].setParentID(cur.getParent().getParentID());
+				Appointment app = new Appointment();
+				app.setId(cur.getId());
+				app.setStatus(getAppointmentStatus(cur.getStatus()));
+				app.setDate(cur.getDate());
+				app.setBabysitterID(cur.getBabysitter().getSitterID());
+				app.setParentID(cur.getParent().getParentID());
+				list.add(app);
 			}
 			return list;
 		}
@@ -74,15 +76,15 @@ public class BabysitterDAOImpl implements BabysitterDAO {
 		session.beginTransaction();
 		
 		AppointmentEntity appEntity = session.get(AppointmentEntity.class, appointment.getId());
+		AppointmentStatus curStatus = appointment.getStatus();
 		
-		if(appEntity != null && appEntity.getStatus()==AppointmentStatus.Pending.ordinal()) {
+		if(appEntity != null && appEntity.getStatus()!=curStatus.ordinal()) {
 			//Update status
-			AppointmentStatus curStatus = appointment.getStatus();
 			appEntity.setStatus(curStatus.ordinal());
+			session.save(appEntity);
+			session.getTransaction().commit();
 		}
-		
-		session.save(appEntity);
-		session.getTransaction().commit();
+
 		session.close();
 		sessionFactory.close();
 	}

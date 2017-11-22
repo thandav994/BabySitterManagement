@@ -1,5 +1,8 @@
 package com.ooad.beans;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+
 import com.ooad.dao.BabysitterDAOImpl;
 
 public class BabySitter extends User {
@@ -32,9 +35,27 @@ public class BabySitter extends User {
 		this.info = info;
 	}
 
-	public Appointment[] getListOfAppointments() {
+	public ArrayList<Appointment> getListOfAppointments() {
 		BabysitterDAOImpl daoObj = new BabysitterDAOImpl();
-		return daoObj.getListOfAppointments(this);
+		ArrayList<Appointment> list = daoObj.getListOfAppointments(this);
+		if (list != null) {
+			for (int i = 0; i<list.size(); i++) {
+				Appointment cur = list.get(i);
+				/* If the appointment date has passed, then update to 'Completed' */
+				if (cur.getStatus() == AppointmentStatus.Accepted &&
+						cur.getDate().before(Calendar.getInstance().getTime())) {
+					cur.setStatus(AppointmentStatus.Completed);
+					daoObj.saveAppointment(cur);
+				}
+				/* If the appointment is in 'Pending' beyond date then update it to 'Rejected' */
+				else if (cur.getStatus() == AppointmentStatus.Pending &&
+						cur.getDate().before(Calendar.getInstance().getTime()))  {
+					cur.setStatus(AppointmentStatus.Rejected);
+					daoObj.saveAppointment(cur);
+				}
+			}
+		}
+		return list;
 	}
 	
 	public void updateBabySitterApproval(Appointment app, Boolean approval) {

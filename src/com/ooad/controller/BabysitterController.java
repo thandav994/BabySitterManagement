@@ -7,7 +7,7 @@ public class BabysitterController {
 	private BabySitter loggedinUser;
 	
 	/* Appointments List */
-	//Appointment[]  array = loggedinUser.getListOfAppointments();
+	//ArrayList<Appointment>  array = loggedinUser.getListOfAppointments();
 	
 	/* Get the parentInfo for a particular appointment
 	 * This is fetched only when required. This info is not loaded all the time */
