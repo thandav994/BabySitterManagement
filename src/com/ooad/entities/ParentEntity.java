@@ -1,5 +1,6 @@
 package com.ooad.entities;
 
+import java.math.BigInteger;
 import java.util.Date;
 
 import javax.persistence.Entity;
@@ -24,7 +25,11 @@ public class ParentEntity {
 	
 	@Temporal(TemporalType.DATE)
     private Date dateOfBirth;
-
+	private String address;
+	private BigInteger phone;
+	private Integer zipcode;
+	private String special_requests;
+	
 	public int getParentID() {
 		return parentID;
 	}
@@ -71,6 +76,38 @@ public class ParentEntity {
 
 	public void setDateOfBirth(Date dateOfBirth) {
 		this.dateOfBirth = dateOfBirth;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public BigInteger getPhone() {
+		return phone;
+	}
+
+	public void setPhone(BigInteger phone) {
+		this.phone = phone;
+	}
+
+	public Integer getZipcode() {
+		return zipcode;
+	}
+
+	public void setZipcode(Integer zipcode) {
+		this.zipcode = zipcode;
+	}
+
+	public String getSpecial_requests() {
+		return special_requests;
+	}
+
+	public void setSpecial_requests(String special_requests) {
+		this.special_requests = special_requests;
 	} 
 	
 	

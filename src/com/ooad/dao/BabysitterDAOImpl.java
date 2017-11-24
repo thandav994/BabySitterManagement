@@ -13,6 +13,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.query.Query;
 
 import com.ooad.beans.*;
 import com.ooad.entities.*;
@@ -42,10 +43,11 @@ public class BabysitterDAOImpl implements BabysitterDAO {
 		
 		session.beginTransaction();
 		
-		List<AppointmentEntity> appointments = (List<AppointmentEntity>) session.createQuery(
-				"from babysitters natural join appointments where babysitters.emailID=" 
-				+ user.getEmail()).list();
-		
+		@SuppressWarnings("unchecked")
+		Query<AppointmentEntity> query = session.createQuery("from AppointmentEntity app where app.babysitter.login.user_id =:sitterID");
+		query.setParameter("sitterID", user.getEmail());
+		List<AppointmentEntity> appointments = query.getResultList();
+
 		session.close();
 		sessionFactory.close();
 		
@@ -56,9 +58,21 @@ public class BabysitterDAOImpl implements BabysitterDAO {
 				Appointment app = new Appointment();
 				app.setId(cur.getId());
 				app.setStatus(getAppointmentStatus(cur.getStatus()));
-				app.setDate(cur.getDate());
-				app.setBabysitterID(cur.getBabysitter().getSitterID());
-				app.setParentID(cur.getParent().getParentID());
+				app.setAppointmentDate(cur.getDate().toString());
+				
+				ParentEntity curParent = cur.getParent();
+				Parent p = new Parent();
+				p.setAddress(curParent.getAddress());
+				p.setBirthday(curParent.getDateOfBirth().toString());
+				//p.setEmail(curParent.getEmail());
+				p.setFirstName(curParent.getFirstName());
+				p.setGender(curParent.getGender());
+				p.setLastName(curParent.getLastName());
+				p.setPhone(curParent.getPhone().toString());
+				p.setZipcode(curParent.getZipcode());
+				p.setSpecial_requests(curParent.getSpecial_requests());
+				
+				app.setParent(p);
 				list.add(app);
 			}
 			return list;
@@ -87,28 +101,5 @@ public class BabysitterDAOImpl implements BabysitterDAO {
 
 		session.close();
 		sessionFactory.close();
-	}
-	
-	public Parent getParentInfo(int parentID) {
-		
-		SessionFactory sessionFactory = new Configuration()
-	               .configure("hibernate.cfg.xml").buildSessionFactory();
-		Session session = sessionFactory.openSession();
-		
-		session.beginTransaction();
-		
-		ParentEntity parent = session.get(ParentEntity.class, parentID);
-		
-		session.close();
-		sessionFactory.close();
-		
-		if (parent != null) {
-			Parent p = new Parent();
-			//TODO Fill data
-			return p;
-			
-		} else {
-			return null;
-		}
 	}
 }

@@ -1,23 +1,16 @@
 package com.ooad.beans;
 
-import com.ooad.dao.LoginDAOImpl;
-
-public class User {
-	private int id;
+public abstract class User {
 	private String email;
 	private String password;
-	private String category;
 	private String firstName;
 	private String lastName;
 	private String birthday;
 	private String gender;
-	
-	public int getId() {
-		return id;
-	}
-	public void setId(int id) {
-		this.id = id;
-	}
+	private String address;
+	private Integer zipcode;
+	private String phone;
+
 	public String getPassword() {
 		return password;
 	}
@@ -29,12 +22,6 @@ public class User {
 	}
 	public void setEmail(String email) {
 		this.email = email;
-	}
-	public String getCategory() {
-		return category;
-	}
-	public void setCategory(String category) {
-		this.category = category;
 	}
 	public String getFirstName() {
 		return firstName;
@@ -60,14 +47,23 @@ public class User {
 	public void setGender(String gender) {
 		this.gender = gender;
 	}
-	public boolean login() {
-		LoginDAOImpl loginDAO = new LoginDAOImpl();
-		boolean isExistingUser = loginDAO.isExistingUser(this);
-		if(isExistingUser)
-			return true;
-		return false;
-		
+	public String getAddress() {
+		return address;
 	}
-
-	
+	public void setAddress(String address) {
+		this.address = address;
+	}
+	public Integer getZipcode() {
+		return zipcode;
+	}
+	public void setZipcode(Integer zipcode) {
+		this.zipcode = zipcode;
+	}
+	public String getPhone() {
+		return phone;
+	}
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+	public abstract boolean login();
 }

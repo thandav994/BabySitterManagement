@@ -10,5 +10,4 @@ import com.ooad.beans.BabySitter;
 public interface BabysitterDAO {
 	public ArrayList<Appointment> getListOfAppointments(BabySitter user);
 	public void saveAppointment(Appointment appointment);
-	public Parent getParentInfo(int parentID);
 }

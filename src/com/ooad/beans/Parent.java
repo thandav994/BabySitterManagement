@@ -3,20 +3,29 @@ package com.ooad.beans;
 import java.text.ParseException;
 import java.util.ArrayList;
 
+import com.ooad.dao.LoginDAOImpl;
 import com.ooad.dao.ParentsFunctionalityDAOImpl;
 
 public class Parent extends User{
+
+	private String special_requests;
 	
-	private int babyAge;
-	
-	public int getBabyAge() {
-		return babyAge;
+	public String getSpecial_requests() {
+		return special_requests;
 	}
 
-	public void setBabyAge(int babyAge) {
-		this.babyAge = babyAge;
+	public void setSpecial_requests(String special_requests) {
+		this.special_requests = special_requests;
 	}
-
+	
+	public boolean login() {
+		LoginDAOImpl loginDAO = new LoginDAOImpl();
+		Login isExistingUser = loginDAO.isExistingParent(this);
+		if(isExistingUser.getPassword() == this.getPassword())
+			return true;
+		return false;
+	}
+	
 	public ArrayList<BabySitter> viewListofBabySitters(String appointmentDate) throws ParseException {
 
 		// TODO Auto-generated method stub
@@ -27,15 +36,11 @@ public class Parent extends User{
 
 	}
 
-
-	public ArrayList<BabySitter> getSitterInformation(String sitterID) {
-
+	public BabySitter getSitterInformation(String sitterID) {
 		// TODO Auto-generated method stub
 
 		ParentsFunctionalityDAOImpl parentDAO = new ParentsFunctionalityDAOImpl();
-
-		return parentDAO.getSitterInformation();
-
+		return parentDAO.getSitterInformation(sitterID);
 	}
 
 
@@ -44,9 +49,19 @@ public class Parent extends User{
 		// TODO Auto-generated method stub
 
 		ParentsFunctionalityDAOImpl parentDAO = new ParentsFunctionalityDAOImpl();
+		return parentDAO.bookAppointment(this,sitterID, appointmentDate);
+	}
 
-		return parentDAO.bookAppointment(sitterID, appointmentDate);
+	public ArrayList<Appointment> getAppointmentsList() {
+		// TODO Auto-generated method stub
+		ParentsFunctionalityDAOImpl parentDAO = new ParentsFunctionalityDAOImpl();
+		return parentDAO.getAppointmentsList(this);
+	}
 
+	public boolean cancelAppointment(Integer appointmentID) {
+		// TODO Auto-generated method stub
+		ParentsFunctionalityDAOImpl parentDAO = new ParentsFunctionalityDAOImpl();
+		return parentDAO.cancelAppointment(appointmentID);
 	}
 
 }
