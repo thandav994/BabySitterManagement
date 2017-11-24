@@ -11,7 +11,6 @@ public abstract class User {
 	private Integer zipcode;
 	private String phone;
 
-	
 	public String getPassword() {
 		return password;
 	}

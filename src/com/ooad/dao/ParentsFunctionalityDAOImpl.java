@@ -53,7 +53,7 @@ public class ParentsFunctionalityDAOImpl implements ParentsFunctionalityDAO {
 			sitter.setExperience(each.getExperience());
 			sitter.setFirstName(each.getFirstName());
 			sitter.setGender(each.getGender());
-			sitter.setHourlypay(each.getHourlypay());
+			sitter.setHourlyPay(each.getHourlypay());
 			sitter.setLastName(each.getLastName());
 			sitter.setPhone(each.getPhone().toString());
 			sitter.setSsn(each.getSsn());
@@ -87,7 +87,7 @@ public class ParentsFunctionalityDAOImpl implements ParentsFunctionalityDAO {
 			sitter.setExperience(babysitterEntity.getExperience());
 			sitter.setFirstName(babysitterEntity.getFirstName());
 			sitter.setGender(babysitterEntity.getGender());
-			sitter.setHourlypay(babysitterEntity.getHourlypay());
+			sitter.setHourlyPay(babysitterEntity.getHourlypay());
 			sitter.setLastName(babysitterEntity.getLastName());
 			sitter.setPhone(babysitterEntity.getPhone().toString());
 			sitter.setSsn(babysitterEntity.getSsn());
@@ -112,8 +112,7 @@ public class ParentsFunctionalityDAOImpl implements ParentsFunctionalityDAO {
 			session.beginTransaction();
 			AppointmentEntity appointment = new AppointmentEntity();
 			Date appointmentDateFormatted = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH).parse(appointmentDate);
-			appointment.setStartDate(appointmentDateFormatted);
-			appointment.setEndDate(appointmentDateFormatted);
+			appointment.setDate(appointmentDateFormatted);
 			
 			Query<BabySitterEntity> query = session.createQuery("from BabySitterEntity b where b.login.user_id =:sitterID");
 			query.setParameter("sitterID", sitterID);
@@ -150,7 +149,7 @@ public class ParentsFunctionalityDAOImpl implements ParentsFunctionalityDAO {
 		for(AppointmentEntity eachAppointment : appointmentEntities) {
 			Appointment appointment = new Appointment();
 			appointment.setId(eachAppointment.getId());
-			appointment.setAppointmentDate(eachAppointment.getStartDate().toString());
+			appointment.setAppointmentDate(eachAppointment.getDate().toString());
 			appointment.setStatus(AppointmentStatus.values()[eachAppointment.getStatus()]);
 			
 			BabySitterEntity babysitterEntity = eachAppointment.getBabysitter();
@@ -162,7 +161,7 @@ public class ParentsFunctionalityDAOImpl implements ParentsFunctionalityDAO {
 			sitter.setExperience(babysitterEntity.getExperience());
 			sitter.setFirstName(babysitterEntity.getFirstName());
 			sitter.setGender(babysitterEntity.getGender());
-			sitter.setHourlypay(babysitterEntity.getHourlypay());
+			sitter.setHourlyPay(babysitterEntity.getHourlypay());
 			sitter.setLastName(babysitterEntity.getLastName());
 			sitter.setPhone(babysitterEntity.getPhone().toString());
 			sitter.setSsn(babysitterEntity.getSsn());
