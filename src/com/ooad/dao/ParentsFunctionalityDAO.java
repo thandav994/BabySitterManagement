@@ -9,6 +9,6 @@ import com.ooad.beans.Parent;
 public interface ParentsFunctionalityDAO {
 	public ArrayList<BabySitter> getListofBabySitters(String appointmentDate) throws ParseException;
 	public BabySitter getSitterInformation(String sitterID);
-	public boolean bookAppointment(Parent parent, String sitterID, String appointmentDate) throws ParseException ;
+	public boolean bookAppointment(Parent parent, String sitterID, String appointmentDate);
 	public boolean cancelAppointment(Integer appointmentID);
 }

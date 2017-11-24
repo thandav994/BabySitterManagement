@@ -5,7 +5,7 @@ public abstract class User {
 	private String password;
 	private String firstName;
 	private String lastName;
-	private String birthday;
+	private String dateofBirth;
 	private String gender;
 	private String address;
 	private Integer zipcode;
@@ -36,11 +36,11 @@ public abstract class User {
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
 	}
-	public String getBirthday() {
-		return birthday;
+	public String getdateofBirth() {
+		return dateofBirth;
 	}
-	public void setBirthday(String birthday) {
-		this.birthday = birthday;
+	public void setdateofBirth(String dateofBirth) {
+		this.dateofBirth = dateofBirth;
 	}
 	public String getGender() {
 		return gender;

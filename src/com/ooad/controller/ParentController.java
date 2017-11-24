@@ -67,14 +67,16 @@ public class ParentController {
 	public ModelAndView getAppointmentsList(@ModelAttribute("parent") Parent parent) {
 		boolean success=false;
 		ArrayList<Appointment> appointments = parent.getAppointmentsList();
+		if(!appointments.isEmpty())
+			success = true;
 		ModelAndView map;
 		if(success) {
 			map = new ModelAndView("viewAppointments");
 			map.addObject("appointments", appointments);
 		}
 		else {
-			map = new ModelAndView("Parentshome");
-			map.addObject("errorMessage","There's some error");
+			map = new ModelAndView("viewAppointments");
+			map.addObject("errorMessage","You do not have any appointments !! Go ahead and create one ! ");
 		}
 	    return map;
 	}
@@ -90,7 +92,7 @@ public class ParentController {
 		}
 		else {
 			map = new ModelAndView("Parentshome");
-			map.addObject("errorMessage","There's some error");
+			map.addObject("errorMessage","Unable to cancel now. Please try again later.");
 		}
 	    return map;
 	}

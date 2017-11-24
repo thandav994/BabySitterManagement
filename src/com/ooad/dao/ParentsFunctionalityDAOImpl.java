@@ -48,7 +48,7 @@ public class ParentsFunctionalityDAOImpl implements ParentsFunctionalityDAO {
 			BabySitter sitter = new BabySitter();			
 			sitter.setAddress(each.getAddress());
 			sitter.setBio(each.getBio());
-			sitter.setBirthday(each.getDateOfBirth().toString());
+			sitter.setdateofBirth(each.getDateOfBirth().toString());
 			sitter.setEmail(each.getLogin().getUser_id());
 			sitter.setExperience(each.getExperience());
 			sitter.setFirstName(each.getFirstName());
@@ -82,7 +82,7 @@ public class ParentsFunctionalityDAOImpl implements ParentsFunctionalityDAO {
 			sitter = new BabySitter();
 			sitter.setAddress(babysitterEntity.getAddress());
 			sitter.setBio(babysitterEntity.getBio());
-			sitter.setBirthday(babysitterEntity.getDateOfBirth().toString());
+			sitter.setdateofBirth(babysitterEntity.getDateOfBirth().toString());
 			sitter.setEmail(babysitterEntity.getLogin().getUser_id());
 			sitter.setExperience(babysitterEntity.getExperience());
 			sitter.setFirstName(babysitterEntity.getFirstName());
@@ -102,7 +102,7 @@ public class ParentsFunctionalityDAOImpl implements ParentsFunctionalityDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	public boolean bookAppointment(Parent parent, String sitterID, String appointmentDate) throws ParseException {
+	public boolean bookAppointment(Parent parent, String sitterID, String appointmentDate) {
 		// TODO Auto-generated method stub
 		try {
 			SessionFactory sessionFactory = new Configuration()
@@ -157,7 +157,7 @@ public class ParentsFunctionalityDAOImpl implements ParentsFunctionalityDAO {
 			BabySitter sitter = new BabySitter();
 			sitter.setAddress(babysitterEntity.getAddress());
 			sitter.setBio(babysitterEntity.getBio());
-			sitter.setBirthday(babysitterEntity.getDateOfBirth().toString());
+			sitter.setdateofBirth(babysitterEntity.getDateOfBirth().toString());
 			sitter.setEmail(babysitterEntity.getLogin().getUser_id());
 			sitter.setExperience(babysitterEntity.getExperience());
 			sitter.setFirstName(babysitterEntity.getFirstName());

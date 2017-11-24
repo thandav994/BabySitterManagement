@@ -50,7 +50,7 @@ public class LoginDAOImpl implements LoginDAO{
 			sitter.setLastName(babysitter.getLastName());
 			sitter.setGender(babysitter.getGender());
 			
-			Date dateOfBirth = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH).parse(babysitter.getBirthday());
+			Date dateOfBirth = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH).parse(babysitter.getdateofBirth());
 			sitter.setDateOfBirth(dateOfBirth);
 			sitter.setHourlypay(babysitter.getHourlypay());
 			sitter.setBio(babysitter.getBio());
@@ -94,7 +94,7 @@ public class LoginDAOImpl implements LoginDAO{
 			parentEntity.setLastName(parent.getLastName());
 			parentEntity.setGender(parent.getGender());
 			
-			Date dateOfBirth = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH).parse(parent.getBirthday());
+			Date dateOfBirth = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH).parse(parent.getdateofBirth());
 			parentEntity.setDateOfBirth(dateOfBirth);
 			parentEntity.setAddress(parent.getAddress());
 			parentEntity.setPhone(BigInteger.valueOf(Long.parseLong(parent.getPhone())));
@@ -192,7 +192,7 @@ public class LoginDAOImpl implements LoginDAO{
 			ParentEntity parentEntity = parents.get(0);
 			parent.setFirstName(parentEntity.getFirstName());
 			parent.setLastName(parentEntity.getLastName());
-			parent.setBirthday(parentEntity.getDateOfBirth().toString());
+			parent.setdateofBirth(parentEntity.getDateOfBirth().toString());
 			parent.setGender(parentEntity.getGender());
 			parent.setAddress(parentEntity.getAddress());
 			parent.setPhone(parentEntity.getPhone().toString());
@@ -231,7 +231,7 @@ public class LoginDAOImpl implements LoginDAO{
 			BabySitterEntity sitterEntity = sitters.get(0);
 			sitter.setFirstName(sitterEntity.getFirstName());
 			sitter.setLastName(sitterEntity.getLastName());
-			sitter.setBirthday(sitterEntity.getDateOfBirth().toString());
+			sitter.setdateofBirth(sitterEntity.getDateOfBirth().toString());
 			sitter.setGender(sitterEntity.getGender());
 			sitter.setAddress(sitterEntity.getAddress());
 			sitter.setPhone(sitterEntity.getPhone().toString());
