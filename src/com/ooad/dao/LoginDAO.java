@@ -2,9 +2,13 @@ package com.ooad.dao;
 
 import java.text.ParseException;
 
-import com.ooad.beans.User;
+import com.ooad.beans.BabySitter;
+import com.ooad.beans.Login;
+import com.ooad.beans.Parent;
 
 public interface LoginDAO {
-	public void addUser(User user) throws ParseException;
-	public boolean isExistingUser(User user);
+	public void addParent(Parent parent) throws ParseException;
+	public void addBabySitter(BabySitter babySitter) throws ParseException;
+	public Login isExistingParent(Parent parent);
+	public Login isExistingSitter(BabySitter sitter);
 }

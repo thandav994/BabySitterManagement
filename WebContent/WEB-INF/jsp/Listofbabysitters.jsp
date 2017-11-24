@@ -27,7 +27,7 @@
   <div class="column middle" style="background-color:#bbb;">
 <c:if test="${not empty sitters}">
     <c:forEach items="${sitters}" var="sitter">
-      <div class="contentlist"> <a href = "#">"${sitter.firstName} ${sitter.lastName}"<br>Work Ex: 2 years<br> Skills: Singing, Dancing, Sports. </a> </div><br><br><br>
+      <div class="contentlist"> <a href = "/BabySitterManagement/viewSitterInfo?sitterId=${sitter.email}">"${sitter.firstName} ${sitter.lastName}"<br>Work Ex: 2 years<br> Skills: Singing, Dancing, Sports. </a> </div><br><br><br>
 </c:forEach>
 </c:if>	
 </div>

@@ -1,7 +1,6 @@
 package com.ooad.controller;
 
 import java.text.ParseException;
-import java.util.ArrayList;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -10,20 +9,35 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.ooad.beans.BabySitter;
 import com.ooad.beans.Login;
-import com.ooad.beans.User;
+import com.ooad.beans.Parent;
 import com.ooad.dao.LoginDAOImpl;
 
 @Controller
-@SessionAttributes("user")
+@SessionAttributes({"parent", "sitter"})
 public class LoginController {
 	
-	@RequestMapping(value= "/addUser", method = RequestMethod.POST)
-	public String addUser(User user) {
+	@RequestMapping(value= "/addParent", method = RequestMethod.POST)
+	public String addParent(Parent parent) {
 		// Creating login DAO object in order to persist the data in the database
 		LoginDAOImpl loginDAO = new LoginDAOImpl();
 		try {
-			loginDAO.addUser(user);
+			loginDAO.addParent(parent);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return "redirect:login";
+	}
+	
+	@RequestMapping(value= "/addSitter", method = RequestMethod.POST)
+	public String addUser(BabySitter sitter) {
+		// Creating login DAO object in order to persist the data in the database
+		LoginDAOImpl loginDAO = new LoginDAOImpl();
+		try {
+			loginDAO.addBabySitter(sitter);
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -35,22 +49,29 @@ public class LoginController {
 	@RequestMapping(value= "/login", method = RequestMethod.POST)
 	public ModelAndView login(@ModelAttribute("login")Login login) {
 		ModelAndView modelAndView = null;
-		User user = new User();
-		user.setEmail(login.getUserID());
-		user.setPassword(login.getPassword());
-		user.setCategory(login.getCategory());
-		if(user.login()) {
 			if(login.getCategory().contentEquals("parent")) {
-				modelAndView = new ModelAndView("Parentshome");
-				modelAndView.addObject("user",user);
+				Parent parent = new Parent();
+				parent.setEmail(login.getUserID());
+				parent.setPassword(login.getPassword());
+				if(parent.login()) {
+					modelAndView = new ModelAndView("Parentshome");
+					modelAndView.addObject("parent",parent);
+				}
 			}
-			else if(login.getCategory().contentEquals("babysitter"))
-				modelAndView = new ModelAndView("babysittershome");
-		} else {
+			else if(login.getCategory().contentEquals("babysitter")) {
+				BabySitter sitter = new BabySitter();
+				sitter.setEmail(login.getUserID());
+				sitter.setPassword(login.getPassword());
+				if(sitter.login()) {
+					modelAndView = new ModelAndView("babysittershome");
+					modelAndView.addObject("sitter",sitter);
+				}
+			}
+				
+		if(modelAndView == null) {
 			modelAndView = new ModelAndView("login");
 			modelAndView.addObject("errorMessage", "No profile found with the given credentials");
 		}
 		return modelAndView;
 	}
-	
 }

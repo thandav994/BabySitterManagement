@@ -28,10 +28,10 @@ public class BabysitterDAOImpl {
 		
 		session.beginTransaction();
 		
+		@SuppressWarnings("unchecked")
 		List<AppointmentEntity> appointments = (List<AppointmentEntity>) session.createQuery(
 				"from babysitters natural join appointments where babysitters.emailID=" 
 				+ user.getEmail()).list();
-		
 		session.close();
 		sessionFactory.close();
 		

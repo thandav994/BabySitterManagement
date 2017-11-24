@@ -18,21 +18,29 @@ not displayed. The information between the BODY and /BODY tags is displayed.-->
 </head>
 
 <body background="C:\Users\nitesh\Documents\babysitting_order2.jpg">
-<h1>Congratulations,your request has been approved!!</h1>
-<h2>Just one more step to complete the process! </h2>
+    <img src="images/logo.png" align=left>
+<div class="header">
+     <h1>FIND CARE FOR YOUR BABY.</h1>
+</div>
+<div class="topnav">
+  <a href="#">Link</a>
+  <a href="#">Link</a>
+  <a href="#">Link</a>
+</div>
+<div class="container">
+    <h4>Congratulations,your request has been approved!!<br> Just one more step to complete the process! </h4>
 <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300' rel='stylesheet' type='text/css'>
 <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
 
-<div class="container">
+
   <div id="Checkout" class="inline">
-      <h1>Payment</h1>
       <div class="card-row">
           <span class="visa"></span>
           <span class="mastercard"></span>
           <span class="amex"></span>
           <span class="discover"></span>
       </div>
-      <form>
+      <form method="post" action="parentshome.jsp">
           <div class="form-group">
               <label for="PaymentAmount">Payment amount</label>
               <div class="amount-placeholder">
@@ -72,7 +80,7 @@ not displayed. The information between the BODY and /BODY tags is displayed.-->
           </div>
           <button id="PayButton" class="btn btn-block btn-success submit-button" type="submit">
               <span class="submit-button-lock"></span>
-              <span class="align-middle">Pay $100.00</span> <!--Price to be added here,depending on the babysitter's experience-->
+              <span class="align-middle">Pay</span> <!--Price to be added here,depending on the babysitter's experience-->
           </button>
       </form>
   </div>

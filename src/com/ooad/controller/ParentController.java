@@ -11,16 +11,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.ooad.beans.Appointment;
 import com.ooad.beans.BabySitter;
 import com.ooad.beans.Parent;
-import com.ooad.beans.User;
 
 @Controller
-@SessionAttributes({"user","appointmentDate"})
+@SessionAttributes({"parent","appointmentDate"})
 public class ParentController {
 	@RequestMapping(value = { "/Listofbabysitters"}, method = RequestMethod.GET)
-	public ModelAndView getBabySittersList(@ModelAttribute("user") User user, @RequestParam("appointmentDate") String appointmentDate) {
-		Parent parent = new Parent();    
+	public ModelAndView getBabySittersList(@ModelAttribute("parent") Parent parent, @RequestParam("appointmentDate") String appointmentDate) {    
 		ArrayList<BabySitter> sitters = null;
 		try {
 			sitters = parent.viewListofBabySitters(appointmentDate);
@@ -36,26 +35,15 @@ public class ParentController {
 	@RequestMapping(value = { "/getSitterInformation"}, method = RequestMethod.GET)
 	public ModelAndView getSitterInformation(@RequestParam("sitterID") String sitterID) {
 	    Parent parent = new Parent();
-		ArrayList<BabySitter> sitters = parent.getSitterInformation(sitterID);
-//		System.out.println("Kontroler EmployeeController");
-//	    ArrayList<User> list = new ArrayList<>();
-//	    User user1 = new User();
-//	    user1.setFirstName("Thandav");
-//	    user1.setLastName("K");
-//	    list.add(user1);
-//	    User user2 = new User();
-//	    user2.setFirstName("Shreyash");
-//	    user2.setLastName("M");
-//	    list.add(user2);
-	    ModelAndView map = new ModelAndView("Listofbabysitters");
-	    map.addObject("sitters", sitters);
+		BabySitter sitter = parent.getSitterInformation(sitterID);
+	    ModelAndView map = new ModelAndView("sitterinfo");
+	    map.addObject("sitter", sitter);
 
 	    return map;
 	}
 	
 	@RequestMapping(value = { "/bookAppointment"}, method = RequestMethod.GET)
-	public ModelAndView bookAppointment(@ModelAttribute("user") User user, @ModelAttribute("appointmentDate") String appointmentDate, @RequestParam("sitterID") String sitterID) {
-	    Parent parent = new Parent();
+	public ModelAndView bookAppointment(@ModelAttribute("parent") Parent parent, @ModelAttribute("appointmentDate") String appointmentDate, @RequestParam("sitterID") String sitterID) {
 		boolean success=false;
 		try {
 			success = parent.bookAppointment(sitterID,appointmentDate);
@@ -63,21 +51,45 @@ public class ParentController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-//		System.out.println("Kontroler EmployeeController");
-//	    ArrayList<User> list = new ArrayList<>();
-//	    User user1 = new User();
-//	    user1.setFirstName("Thandav");
-//	    user1.setLastName("K");
-//	    list.add(user1);
-//	    User user2 = new User();
-//	    user2.setFirstName("Shreyash");
-//	    user2.setLastName("M");
-//	    list.add(user2);
 		ModelAndView map;
 		if(success) {
-			map = new ModelAndView("Listofbabysitters");}
+			map = new ModelAndView("getSitterInformation");
+			map.addObject("successMessage","Request successful");
+		}
 		else {
 			map = new ModelAndView("getSitterInformation");
+			map.addObject("errorMessage","There's some error");
+		}
+	    return map;
+	}
+	
+	@RequestMapping(value = { "/getAppointmentsList"}, method = RequestMethod.GET)
+	public ModelAndView getAppointmentsList(@ModelAttribute("parent") Parent parent) {
+		boolean success=false;
+		ArrayList<Appointment> appointments = parent.getAppointmentsList();
+		ModelAndView map;
+		if(success) {
+			map = new ModelAndView("viewAppointments");
+			map.addObject("appointments", appointments);
+		}
+		else {
+			map = new ModelAndView("Parentshome");
+			map.addObject("errorMessage","There's some error");
+		}
+	    return map;
+	}
+	
+	@RequestMapping(value = { "/cancelAppointment"}, method = RequestMethod.GET)
+	public ModelAndView cancelAppointment(@ModelAttribute("parent") Parent parent, @RequestParam("appointmentID") Integer appointmentID) {
+		boolean success=false;
+		success = parent.cancelAppointment(appointmentID);
+		ModelAndView map;
+		if(success) {
+			map = new ModelAndView("viewAppointments");
+			map.addObject("SuccessMessage","Appointment successfully cancelled!");
+		}
+		else {
+			map = new ModelAndView("Parentshome");
 			map.addObject("errorMessage","There's some error");
 		}
 	    return map;
