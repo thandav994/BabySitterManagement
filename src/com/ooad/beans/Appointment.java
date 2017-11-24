@@ -1,13 +1,12 @@
 package com.ooad.beans;
 
-
 public class Appointment {
 	
 	private int id;
 	private String appointmentDate;
-	private BabySitter sitter;
-	private Parent parent;
 	private AppointmentStatus status;
+	private Parent parent;
+	private BabySitter babysitter;
 
 	public AppointmentStatus getStatus() {
 		return status;
@@ -34,11 +33,11 @@ public class Appointment {
 	}
 
 	public BabySitter getSitter() {
-		return sitter;
+		return babysitter;
 	}
 
 	public void setSitter(BabySitter sitter) {
-		this.sitter = sitter;
+		this.babysitter = sitter;
 	}
 
 	public Parent getParent() {

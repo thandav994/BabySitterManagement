@@ -7,6 +7,7 @@ import com.ooad.dao.LoginDAOImpl;
 import com.ooad.dao.ParentsFunctionalityDAOImpl;
 
 public class Parent extends User{
+
 	private String special_requests;
 	
 	public String getSpecial_requests() {
@@ -26,19 +27,27 @@ public class Parent extends User{
 	}
 	
 	public ArrayList<BabySitter> viewListofBabySitters(String appointmentDate) throws ParseException {
+
 		// TODO Auto-generated method stub
+
 		ParentsFunctionalityDAOImpl parentDAO = new ParentsFunctionalityDAOImpl();
+
 		return parentDAO.getListofBabySitters(appointmentDate);
+
 	}
 
 	public BabySitter getSitterInformation(String sitterID) {
 		// TODO Auto-generated method stub
+
 		ParentsFunctionalityDAOImpl parentDAO = new ParentsFunctionalityDAOImpl();
 		return parentDAO.getSitterInformation(sitterID);
 	}
 
+
 	public boolean bookAppointment(String sitterID, String appointmentDate) throws ParseException {
+
 		// TODO Auto-generated method stub
+
 		ParentsFunctionalityDAOImpl parentDAO = new ParentsFunctionalityDAOImpl();
 		return parentDAO.bookAppointment(this,sitterID, appointmentDate);
 	}
@@ -54,5 +63,5 @@ public class Parent extends User{
 		ParentsFunctionalityDAOImpl parentDAO = new ParentsFunctionalityDAOImpl();
 		return parentDAO.cancelAppointment(appointmentID);
 	}
-	
+
 }

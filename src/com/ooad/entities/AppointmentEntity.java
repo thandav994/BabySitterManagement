@@ -15,8 +15,7 @@ public class AppointmentEntity {
 
 	@Id
 	private int id;
-	private Date startDate;
-	private Date endDate;
+	private Date date;
 	private int status;
 	
 	@OneToOne
@@ -51,20 +50,12 @@ public class AppointmentEntity {
 		this.parent = parent;
 	}
 
-	public Date getStartDate() {
-		return startDate;
+	public Date getDate() {
+		return date;
 	}
-
-	public void setStartDate(Date startDate) {
-		this.startDate = startDate;
-	}
-
-	public Date getEndDate() {
-		return endDate;
-	}
-
-	public void setEndDate(Date endDate) {
-		this.endDate = endDate;
+	
+	public void setDate(Date date) {
+		this.date = date;
 	}
 
 	public int getStatus() {

@@ -31,8 +31,7 @@ create table parents(
 
 create table appointments(
 	id integer not null auto_increment primary key,
-    startDate DATE not null,
-    endDate DATE not null,
+    date DATE not null,
     status integer not null DEFAULT 0,
     sitterID integer REFERENCES babysitters(sitterID) on delete cascade on update cascade,
 	parentID integer REFERENCES parents(parentID) on delete cascade on update cascade
