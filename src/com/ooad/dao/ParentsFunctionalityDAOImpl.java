@@ -19,6 +19,7 @@ import com.ooad.beans.Parent;
 import com.ooad.entities.AppointmentEntity;
 import com.ooad.entities.BabySitterEntity;
 import com.ooad.entities.ParentEntity;
+import com.ooad.entities.ReviewsEntity;
 
 public class ParentsFunctionalityDAOImpl implements ParentsFunctionalityDAO {
 	
@@ -31,7 +32,7 @@ public class ParentsFunctionalityDAOImpl implements ParentsFunctionalityDAO {
 		
 		@SuppressWarnings("unchecked")
 		Query<BabySitterEntity> query = session.createQuery("from BabySitterEntity sitter where sitter.sitterID not in (select a.babysitter.sitterID from AppointmentEntity a where a.startDate =:date)");
-		Date appointmentDateFormatted = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH).parse(appointmentDate);
+		Date appointmentDateFormatted = new SimpleDateFormat("yyyy-mm-dd", Locale.ENGLISH).parse(appointmentDate);
 		query.setParameter("date", appointmentDateFormatted);
 		
 //		Criteria criteria = session.createCriteria(BabySitterEntity.class);
@@ -92,6 +93,7 @@ public class ParentsFunctionalityDAOImpl implements ParentsFunctionalityDAO {
 			sitter.setPhone(babysitterEntity.getPhone().toString());
 			sitter.setSsn(babysitterEntity.getSsn());
 			sitter.setZipcode(babysitterEntity.getZipcode());
+			sitter.setRating(babysitterEntity.getReview().getRating());
 			session.close();
 			return sitter;
 		}
@@ -102,7 +104,7 @@ public class ParentsFunctionalityDAOImpl implements ParentsFunctionalityDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	public boolean bookAppointment(Parent parent, String sitterID, String appointmentDate) {
+	public boolean bookAppointment(Appointment appointment) {
 		// TODO Auto-generated method stub
 		try {
 			SessionFactory sessionFactory = new Configuration()
@@ -110,21 +112,21 @@ public class ParentsFunctionalityDAOImpl implements ParentsFunctionalityDAO {
 			Session session = sessionFactory.openSession();
 			
 			session.beginTransaction();
-			AppointmentEntity appointment = new AppointmentEntity();
-			Date appointmentDateFormatted = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH).parse(appointmentDate);
-			appointment.setDate(appointmentDateFormatted);
+			AppointmentEntity appointmentEntity = new AppointmentEntity();
+			Date appointmentDateFormatted = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH).parse(appointment.getAppointmentDate());
+			appointmentEntity.setDate(appointmentDateFormatted);
 			
 			Query<BabySitterEntity> query = session.createQuery("from BabySitterEntity b where b.login.user_id =:sitterID");
-			query.setParameter("sitterID", sitterID);
+			query.setParameter("sitterID", appointment.getSitter().getEmail());
 			BabySitterEntity babysitter = query.getSingleResult();
-			appointment.setBabysitter(babysitter);
+			appointmentEntity.setBabysitter(babysitter);
 			
 			Query<ParentEntity> query2 = session.createQuery("from ParentEntity b where b.login.user_id =:parentID");
-			query2.setParameter("parentID", parent.getEmail());
+			query2.setParameter("parentID", appointment.getParent().getEmail());
 			ParentEntity parentEntity = query2.getSingleResult();
-			appointment.setParent(parentEntity);
-			appointment.setStatus(AppointmentStatus.Pending.ordinal());
-			session.save(appointment);
+			appointmentEntity.setParent(parentEntity);
+			appointmentEntity.setStatus(AppointmentStatus.Pending.ordinal());
+			session.save(appointmentEntity);
 			
 			session.getTransaction().commit();
 			return true;
@@ -192,7 +194,72 @@ public class ParentsFunctionalityDAOImpl implements ParentsFunctionalityDAO {
 		}
 		catch(Exception e) {
 			return false;
-		}
-		
+		}	
 	}
+	
+	public void saveAppointment(Appointment appointment) {
+		
+		SessionFactory sessionFactory = new Configuration()
+	               .configure("hibernate.cfg.xml").buildSessionFactory();
+		Session session = sessionFactory.openSession();
+		
+		session.beginTransaction();
+		
+		AppointmentEntity appEntity = session.get(AppointmentEntity.class, appointment.getId());
+		AppointmentStatus curStatus = appointment.getStatus();
+		
+		if(appEntity != null && appEntity.getStatus()!=curStatus.ordinal()) {
+			//Update status
+			appEntity.setStatus(curStatus.ordinal());
+			session.save(appEntity);
+			session.getTransaction().commit();
+		}
+
+		session.close();
+		sessionFactory.close();
+	}
+
+	@SuppressWarnings("finally")
+	public boolean rateaSitter(Parent parent, BabySitter sitter, Integer rating) {
+		// TODO Auto-generated method stub
+		SessionFactory sessionFactory = new Configuration()
+	               .configure("hibernate.cfg.xml").buildSessionFactory();
+		Session session = sessionFactory.openSession();
+		
+		session.beginTransaction();
+		
+		boolean success = false;
+		
+		try {
+		ReviewsEntity review = new ReviewsEntity();
+		review.setRating(rating);
+		
+		@SuppressWarnings("unchecked")
+		Query<ParentEntity> query = session.createQuery("from ParentEntity p where p.login.user_id =:parentID");
+		query.setParameter("parentID", parent.getEmail());
+		ParentEntity parentEntity = query.getSingleResult();
+		review.setParent(parentEntity);
+		
+		@SuppressWarnings("unchecked")
+		Query<BabySitterEntity> query2 = session.createQuery("from BabySitterEntity b where b.login.user_id =:sitterID");
+		query.setParameter("sitterID", sitter.getEmail());
+		BabySitterEntity sitterEntity = query2.getSingleResult();
+		review.setBabysitter(sitterEntity);
+		
+		session.save(review);
+		
+		session.getTransaction().commit();
+		success = true;
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			session.getTransaction().rollback();
+		}
+		finally {
+			session.close();
+			sessionFactory.close();
+			return success;
+		}
+	}
+	
 }

@@ -1,7 +1,11 @@
 package com.ooad.beans;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 import com.ooad.dao.LoginDAOImpl;
 import com.ooad.dao.ParentsFunctionalityDAOImpl;
@@ -21,7 +25,7 @@ public class Parent extends User{
 	public boolean login() {
 		LoginDAOImpl loginDAO = new LoginDAOImpl();
 		Login isExistingUser = loginDAO.isExistingParent(this);
-		if(isExistingUser.getPassword() == this.getPassword())
+		if(isExistingUser.getPassword().contentEquals(this.getPassword()))
 			return true;
 		return false;
 	}
@@ -44,24 +48,53 @@ public class Parent extends User{
 	}
 
 
-	public boolean bookAppointment(String sitterID, String appointmentDate) throws ParseException {
+	public boolean bookAppointment(BabySitter sitter, String appointmentDate) throws ParseException {
 
 		// TODO Auto-generated method stub
 
 		ParentsFunctionalityDAOImpl parentDAO = new ParentsFunctionalityDAOImpl();
-		return parentDAO.bookAppointment(this,sitterID, appointmentDate);
+		Appointment appointment = new Appointment();
+		appointment.setAppointmentDate(appointmentDate);
+		appointment.setParent(this);
+		appointment.setSitter(sitter);
+		return parentDAO.bookAppointment(appointment);
 	}
 
-	public ArrayList<Appointment> getAppointmentsList() {
+	public ArrayList<Appointment> getAppointmentsList() throws ParseException {
 		// TODO Auto-generated method stub
 		ParentsFunctionalityDAOImpl parentDAO = new ParentsFunctionalityDAOImpl();
-		return parentDAO.getAppointmentsList(this);
+		ArrayList<Appointment> appointmentsList = parentDAO.getAppointmentsList(this);
+		if (appointmentsList != null) {
+			for (int i = 0; i<appointmentsList.size(); i++) {
+				Appointment cur = appointmentsList.get(i);
+				Date appointmentDateFormatted = new SimpleDateFormat("yyyy-mm-dd", Locale.ENGLISH).parse(cur.getAppointmentDate());
+				/* If the appointment date has passed, then update to 'Completed' */
+				if (cur.getStatus() == AppointmentStatus.Accepted &&
+						appointmentDateFormatted.before(Calendar.getInstance().getTime())) {
+					cur.setStatus(AppointmentStatus.Completed);
+					parentDAO.saveAppointment(cur);
+				}
+				/* If the appointment is in 'Pending' beyond date then update it to 'Rejected' */
+				else if (cur.getStatus() == AppointmentStatus.Pending &&
+						appointmentDateFormatted.before(Calendar.getInstance().getTime()))  {
+					cur.setStatus(AppointmentStatus.Rejected);
+					parentDAO.saveAppointment(cur);
+				}
+			}
+		}
+		return appointmentsList;
 	}
 
 	public boolean cancelAppointment(Integer appointmentID) {
 		// TODO Auto-generated method stub
 		ParentsFunctionalityDAOImpl parentDAO = new ParentsFunctionalityDAOImpl();
 		return parentDAO.cancelAppointment(appointmentID);
+	}
+
+	public boolean rateaSitter(BabySitter sitter, Integer rating) {
+		// TODO Auto-generated method stub
+		ParentsFunctionalityDAOImpl parentDAO = new ParentsFunctionalityDAOImpl();
+		return parentDAO.rateaSitter(this, sitter, rating);
 	}
 
 }

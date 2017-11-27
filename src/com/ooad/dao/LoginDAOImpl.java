@@ -27,10 +27,7 @@ public class LoginDAOImpl implements LoginDAO{
 		LoginEntity login = new LoginEntity();
 		login.setUser_id(user.getEmail());
 		login.setPass(user.getPassword());
-		Transaction tx = session.getTransaction();
-		tx.begin();
 		session.save(login);
-		tx.commit();
 	}
 
 	public void addBabySitter(BabySitter babysitter) throws ParseException {
@@ -50,9 +47,9 @@ public class LoginDAOImpl implements LoginDAO{
 			sitter.setLastName(babysitter.getLastName());
 			sitter.setGender(babysitter.getGender());
 			
-			Date dateOfBirth = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH).parse(babysitter.getdateofBirth());
+			Date dateOfBirth = new SimpleDateFormat("yyyy-mm-dd", Locale.ENGLISH).parse(babysitter.getdateofBirth());
 			sitter.setDateOfBirth(dateOfBirth);
-			sitter.setHourlypay(babysitter.getHourlypay());
+			sitter.setHourlypay(babysitter.getHourlyPay());
 			sitter.setBio(babysitter.getBio());
 			sitter.setExperience(babysitter.getExperience());
 			sitter.setAddress(babysitter.getAddress());
@@ -66,11 +63,10 @@ public class LoginDAOImpl implements LoginDAO{
 			
 			session.save(sitter);
 			session.getTransaction().commit();
-			session.close();
-			sessionFactory.close();
 		} 
 		catch(Exception e) {
-			session.getTransaction().rollback();
+			e.printStackTrace();
+			if (session.getTransaction()!=null) session.getTransaction().rollback();
 		}
 		finally {
 			session.close();
@@ -94,7 +90,7 @@ public class LoginDAOImpl implements LoginDAO{
 			parentEntity.setLastName(parent.getLastName());
 			parentEntity.setGender(parent.getGender());
 			
-			Date dateOfBirth = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH).parse(parent.getdateofBirth());
+			Date dateOfBirth = new SimpleDateFormat("yyyy-mm-dd", Locale.ENGLISH).parse(parent.getdateofBirth());
 			parentEntity.setDateOfBirth(dateOfBirth);
 			parentEntity.setAddress(parent.getAddress());
 			parentEntity.setPhone(BigInteger.valueOf(Long.parseLong(parent.getPhone())));
@@ -105,7 +101,6 @@ public class LoginDAOImpl implements LoginDAO{
 			parentEntity.setLogin(login);
 			
 			session.save(parentEntity);
-			
 			session.getTransaction().commit();
 			session.close();
 			sessionFactory.close();
@@ -238,7 +233,7 @@ public class LoginDAOImpl implements LoginDAO{
 			sitter.setZipcode(sitterEntity.getZipcode());
 			sitter.setExperience(sitterEntity.getExperience());
 			sitter.setBio(sitterEntity.getBio());
-			sitter.setHourlypay(sitterEntity.getHourlypay());
+			sitter.setHourlyPay(sitterEntity.getHourlypay());
 			sitter.setSsn(sitterEntity.getSsn());
 		}
 		

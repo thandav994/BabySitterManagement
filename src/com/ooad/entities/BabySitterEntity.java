@@ -34,6 +34,10 @@ public class BabySitterEntity {
 	private Float experience;
 	private String bio;
 	
+	@OneToOne
+	@JoinColumn(name = "reviewID")
+	private ReviewsEntity review;
+	
 	public int getSitterID() {
 		return sitterID;
 	}
@@ -136,6 +140,14 @@ public class BabySitterEntity {
 
 	public void setBio(String bio) {
 		this.bio = bio;
+	}
+
+	public ReviewsEntity getReview() {
+		return review;
+	}
+
+	public void setReview(ReviewsEntity review) {
+		this.review = review;
 	} 
 	
 	

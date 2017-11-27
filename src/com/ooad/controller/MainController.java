@@ -10,13 +10,25 @@ public class MainController {
 	
 	@RequestMapping(value = "/", method = RequestMethod.GET)
     public ModelAndView root() {
-		ModelAndView modelAndView = new ModelAndView("register");
+		ModelAndView modelAndView = new ModelAndView("index");
 		return modelAndView;
     }
 	
 	@RequestMapping(value = "/register", method = RequestMethod.GET)
 	public ModelAndView register() {
 		ModelAndView modelAndView = new ModelAndView("register");
+		return modelAndView;
+	}
+	
+	@RequestMapping(value = "/babysitter_registration", method = RequestMethod.GET)
+	public ModelAndView babysitterRegister() {
+		ModelAndView modelAndView = new ModelAndView("babysitter_registration");
+		return modelAndView;
+	}
+	
+	@RequestMapping(value = "/parent_registration", method = RequestMethod.GET)
+	public ModelAndView parentRegister() {
+		ModelAndView modelAndView = new ModelAndView("parent_registration");
 		return modelAndView;
 	}
 	

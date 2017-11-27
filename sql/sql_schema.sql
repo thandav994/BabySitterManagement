@@ -24,10 +24,11 @@ create table if not exists babysitters(
     phone bigint not null,
     experience float not null,
     bio text not null,
+    reviewID int not null,
     primary key(sitterID),
-    constraint fk foreign key(emailID) references login(user_id) on delete cascade on update restrict
-)ENGINE= InnoDB DEFAULT CHARSET=utf8;
-
+    constraint fk_sitters foreign key(emailID) references login(user_id) on delete cascade on update restrict
+    constraint fk_reviews foreign key(reviewID) references reviews(reviewID) on delete cascade on update restrict
+)ENGINE= InnoDB DEFAULT CHARSET=utf8 ;
 
 
 create table if not exists parents(
@@ -43,23 +44,22 @@ create table if not exists parents(
     special_requests text,
     primary key(parentID),
     constraint fk_parents foreign key(emailID) references login(user_id) on delete cascade on update restrict
-)ENGINE= InnoDB DEFAULT CHARSET=utf8;
+)ENGINE= InnoDB DEFAULT CHARSET=utf8 ;
 
 
 
 create table if not exists appointments(
-    appointmentid integer not null auto_increment PRIMARY KEY,
-    startdate date DEFAULT NULL,
-    enddate date DEFAULT NULL,
-    status integer not null default 0,
+    appointmentID integer not null auto_increment PRIMARY KEY,
+    appointmentdate date DEFAULT NULL,
+    appointmentstatus integer not null default 0,
+paymentstatus integer not null default 0,
     sitterID integer references babysitters(sitterID) on delete cascade on update cascade,
     parentID integer references parents(parentID) on delete cascade on update cascade
-)ENGINE= InnoDB DEFAULT CHARSET=utf8;
+)ENGINE= InnoDB DEFAULT CHARSET=utf8 ;
 
-
-
-create table if not exists payments(
-    id integer not null auto_increment PRIMARY KEY,
-    amount float DEFAULT 0,
-    appointmentid integer references appointments(appointmentid) on delete cascade on update cascade
-)ENGINE= InnoDB DEFAULT CHARSET=utf8;
+create table if not exists reviews(
+	reviewID integer not null auto_increment PRIMARY KEY,
+	sitterID integer references babysitters(sitterID) on delete cascade on update cascade,
+	parentID integer references parents(parentID) on delete cascade on update cascade,
+	rating integer
+)ENGINE= InnoDB DEFAULT CHARSET=utf8 ;

@@ -3,11 +3,13 @@ package com.ooad.controller;
 import java.text.ParseException;
 import java.util.ArrayList;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -16,7 +18,7 @@ import com.ooad.beans.BabySitter;
 import com.ooad.beans.Parent;
 
 @Controller
-@SessionAttributes({"parent","appointmentDate"})
+@SessionAttributes({"parent","appointmentDate", "sitter"})
 public class ParentController {
 	@RequestMapping(value = { "/Listofbabysitters"}, method = RequestMethod.GET)
 	public ModelAndView getBabySittersList(@ModelAttribute("parent") Parent parent, @RequestParam("appointmentDate") String appointmentDate) {    
@@ -31,7 +33,7 @@ public class ParentController {
 	    map.addObject("sitters", sitters);
 	    return map;
 	}
-	
+
 	@RequestMapping(value = { "/getSitterInformation"}, method = RequestMethod.GET)
 	public ModelAndView getSitterInformation(@RequestParam("sitterID") String sitterID) {
 	    Parent parent = new Parent();
@@ -43,10 +45,10 @@ public class ParentController {
 	}
 	
 	@RequestMapping(value = { "/bookAppointment"}, method = RequestMethod.GET)
-	public ModelAndView bookAppointment(@ModelAttribute("parent") Parent parent, @ModelAttribute("appointmentDate") String appointmentDate, @RequestParam("sitterID") String sitterID) {
+	public ModelAndView bookAppointment(@ModelAttribute("parent") Parent parent, @ModelAttribute("sitter") BabySitter sitter, @ModelAttribute("appointmentDate") String appointmentDate) {
 		boolean success=false;
 		try {
-			success = parent.bookAppointment(sitterID,appointmentDate);
+			success = parent.bookAppointment(sitter,appointmentDate);
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -66,16 +68,22 @@ public class ParentController {
 	@RequestMapping(value = { "/getAppointmentsList"}, method = RequestMethod.GET)
 	public ModelAndView getAppointmentsList(@ModelAttribute("parent") Parent parent) {
 		boolean success=false;
-		ArrayList<Appointment> appointments = parent.getAppointmentsList();
-		if(!appointments.isEmpty())
+		ArrayList<Appointment> appointments = null;
+		try {
+			appointments = parent.getAppointmentsList();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if(appointments != null && !appointments.isEmpty())
 			success = true;
 		ModelAndView map;
 		if(success) {
-			map = new ModelAndView("viewAppointments");
+			map = new ModelAndView("parent_notifi");
 			map.addObject("appointments", appointments);
 		}
 		else {
-			map = new ModelAndView("viewAppointments");
+			map = new ModelAndView("parent_notifi");
 			map.addObject("errorMessage","You do not have any appointments !! Go ahead and create one ! ");
 		}
 	    return map;
@@ -96,5 +104,20 @@ public class ParentController {
 		}
 	    return map;
 	}
-
+	
+	@RequestMapping(value = { "/rateaSitter"}, method = RequestMethod.GET)
+	@ResponseStatus(value = HttpStatus.OK)
+	public void rateaSitter(@ModelAttribute("parent") Parent parent, @ModelAttribute("sitter") BabySitter sitter, @RequestParam("rating") Integer rating) {
+		boolean success=false;
+		success = parent.rateaSitter(sitter,rating);
+		ModelAndView map;
+		if(success) {
+			map = new ModelAndView("viewAppointments");
+			map.addObject("SuccessMessage","Appointment successfully cancelled!");
+		}
+		else {
+			map = new ModelAndView("Parentshome");
+			map.addObject("errorMessage","Unable to cancel now. Please try again later.");
+		}
+	}
 }

@@ -1,26 +1,16 @@
 package com.ooad.entities;
 
-import java.util.Date;
-
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 @Entity
-@Table(name = "appointments")
-
-public class AppointmentEntity {
-
+@Table(name="reviews")
+public class ReviewsEntity {
 	@Id
-	private int appointmentid;
-	
-	@Temporal(TemporalType.DATE)
-	private Date date;
-	private int status;
+	private Integer reviewID;
 	
 	@OneToOne
 	@JoinColumn(name = "sitterID")
@@ -29,14 +19,8 @@ public class AppointmentEntity {
 	@OneToOne
 	@JoinColumn(name = "parentID")
 	private ParentEntity parent;
-
-	public int getId() {
-		return appointmentid;
-	}
-
-	public void setId(int id) {
-		this.appointmentid = id;
-	}
+	
+	private Integer rating;
 
 	public BabySitterEntity getBabysitter() {
 		return babysitter;
@@ -54,19 +38,12 @@ public class AppointmentEntity {
 		this.parent = parent;
 	}
 
-	public Date getDate() {
-		return date;
+	public Integer getRating() {
+		return rating;
+	}
+
+	public void setRating(Integer rating) {
+		this.rating = rating;
 	}
 	
-	public void setDate(Date date) {
-		this.date = date;
-	}
-
-	public int getStatus() {
-		return status;
-	}
-
-	public void setStatus(int status) {
-		this.status = status;
-	}
 }

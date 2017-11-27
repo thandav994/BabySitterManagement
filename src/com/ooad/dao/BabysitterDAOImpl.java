@@ -1,18 +1,10 @@
 package com.ooad.dao;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
-
-import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
-import org.hibernate.criterion.Restrictions;
 import org.hibernate.query.Query;
 
 import com.ooad.beans.*;
@@ -63,7 +55,7 @@ public class BabysitterDAOImpl implements BabysitterDAO {
 				ParentEntity curParent = cur.getParent();
 				Parent p = new Parent();
 				p.setAddress(curParent.getAddress());
-				p.setBirthday(curParent.getDateOfBirth().toString());
+				p.setdateofBirth(curParent.getDateOfBirth().toString());
 				//p.setEmail(curParent.getEmail());
 				p.setFirstName(curParent.getFirstName());
 				p.setGender(curParent.getGender());

@@ -33,7 +33,7 @@ public class LoginController {
 	}
 	
 	@RequestMapping(value= "/addSitter", method = RequestMethod.POST)
-	public String addUser(BabySitter sitter) {
+	public String addSitter(BabySitter sitter) {
 		// Creating login DAO object in order to persist the data in the database
 		LoginDAOImpl loginDAO = new LoginDAOImpl();
 		try {
@@ -54,7 +54,7 @@ public class LoginController {
 				parent.setEmail(login.getUserID());
 				parent.setPassword(login.getPassword());
 				if(parent.login()) {
-					modelAndView = new ModelAndView("Parentshome");
+					modelAndView = new ModelAndView("parent_home");
 					modelAndView.addObject("parent",parent);
 				}
 			}
@@ -63,7 +63,7 @@ public class LoginController {
 				sitter.setEmail(login.getUserID());
 				sitter.setPassword(login.getPassword());
 				if(sitter.login()) {
-					modelAndView = new ModelAndView("babysittershome");
+					modelAndView = new ModelAndView("babysitter_home");
 					modelAndView.addObject("sitter",sitter);
 				}
 			}

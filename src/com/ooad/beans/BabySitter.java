@@ -17,6 +17,7 @@ public class BabySitter extends User {
 	private String info;
 	private String ssn;
 	private String bio;
+	private int rating;
 	
 	public float getExperience() {
 		return experience;
@@ -42,13 +43,24 @@ public class BabySitter extends User {
 		this.info = info;
 	}
 	
+	public int getRating() {
+		return rating;
+	}
+
+	public void setRating(int rating) {
+		this.rating = rating;
+	}
+
 	@Override
 	public boolean login() {
 		// TODO Auto-generated method stub
 		LoginDAOImpl loginDAO = new LoginDAOImpl();
 		Login isExistingUser = loginDAO.isExistingSitter(this);
-		if(isExistingUser.getPassword() == this.getPassword())
-			return true;
+		System.out.println("("+isExistingUser.getPassword()+","+ this.getPassword()+")");
+		if(isExistingUser.getPassword().contentEquals(this.getPassword())) {
+			System.out.println("Verified password");
+			return true;	
+		}
 		return false;
 	}
 
