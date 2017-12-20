@@ -168,7 +168,7 @@ border-bottom:1px solid #dbdbdb;
       </style>
   </head>
 
-  <body>
+  <body background="${pageContext.request.contextPath}/resources/Images/background.jpg">
     <div class="nav">
       <div class="container">
         <ul class="pull-left">

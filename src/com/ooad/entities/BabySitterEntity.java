@@ -33,10 +33,7 @@ public class BabySitterEntity {
 	private BigInteger phone;
 	private Float experience;
 	private String bio;
-	
-	@OneToOne
-	@JoinColumn(name = "reviewID")
-	private ReviewsEntity review;
+	private Integer rating;
 	
 	public int getSitterID() {
 		return sitterID;
@@ -142,13 +139,12 @@ public class BabySitterEntity {
 		this.bio = bio;
 	}
 
-	public ReviewsEntity getReview() {
-		return review;
+	public Integer getRating() {
+		return rating;
 	}
 
-	public void setReview(ReviewsEntity review) {
-		this.review = review;
-	} 
-	
+	public void setRating(Integer rating) {
+		this.rating = rating;
+	}
 	
 }

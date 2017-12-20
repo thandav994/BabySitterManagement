@@ -17,7 +17,7 @@ public class BabySitter extends User {
 	private String info;
 	private String ssn;
 	private String bio;
-	private int rating;
+	private float rating;
 	
 	public float getExperience() {
 		return experience;
@@ -43,11 +43,11 @@ public class BabySitter extends User {
 		this.info = info;
 	}
 	
-	public int getRating() {
+	public float getRating() {
 		return rating;
 	}
 
-	public void setRating(int rating) {
+	public void setRating(float rating) {
 		this.rating = rating;
 	}
 
@@ -57,7 +57,8 @@ public class BabySitter extends User {
 		LoginDAOImpl loginDAO = new LoginDAOImpl();
 		Login isExistingUser = loginDAO.isExistingSitter(this);
 		System.out.println("("+isExistingUser.getPassword()+","+ this.getPassword()+")");
-		if(isExistingUser.getPassword().contentEquals(this.getPassword())) {
+		if(isExistingUser != null)
+			if(isExistingUser.getPassword().contentEquals(this.getPassword())) {
 			System.out.println("Verified password");
 			return true;	
 		}
@@ -66,38 +67,43 @@ public class BabySitter extends User {
 
 	public ArrayList<Appointment> getListOfAppointments() throws ParseException{
 		BabysitterDAOImpl daoObj = new BabysitterDAOImpl();
-		ArrayList<Appointment> list = daoObj.getListOfAppointments(this);
-		if (list != null) {
-			for (int i = 0; i<list.size(); i++) {
-				Appointment cur = list.get(i);
-				Date appointmentDateFormatted = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH).parse(cur.getAppointmentDate());
-				/* If the appointment date has passed, then update to 'Completed' */
-				if (cur.getStatus() == AppointmentStatus.Accepted &&
-						appointmentDateFormatted.before(Calendar.getInstance().getTime())) {
-					cur.setStatus(AppointmentStatus.Completed);
-					daoObj.saveAppointment(cur);
-				}
-				/* If the appointment is in 'Pending' beyond date then update it to 'Rejected' */
-				else if (cur.getStatus() == AppointmentStatus.Pending &&
-						appointmentDateFormatted.before(Calendar.getInstance().getTime()))  {
-					cur.setStatus(AppointmentStatus.Rejected);
-					daoObj.saveAppointment(cur);
-				}
-			}
-		}
-		return list;
+		ArrayList<Appointment> appointments = daoObj.getListOfAppointments(this);
+//		if (list != null) {
+//			for (int i = 0; i<list.size(); i++) {
+//				Appointment cur = list.get(i);
+//				Date appointmentDateFormatted = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH).parse(cur.getAppointmentDate());
+//				/* If the appointment date has passed, then update to 'Completed' */
+//				if (cur.getStatus() == AppointmentStatus.Accepted &&
+//						appointmentDateFormatted.before(Calendar.getInstance().getTime())) {
+//					cur.setStatus(AppointmentStatus.Completed);
+//					daoObj.saveAppointment(cur);
+//				}
+//				/* If the appointment is in 'Pending' beyond date then update it to 'Rejected' */
+//				else if (cur.getStatus() == AppointmentStatus.Pending &&
+//						appointmentDateFormatted.before(Calendar.getInstance().getTime()))  {
+//					cur.setStatus(AppointmentStatus.Rejected);
+//					daoObj.saveAppointment(cur);
+//				}
+//			}
+//		}
+		return appointments;
 	}
 	
-	public void updateBabySitterApproval(Appointment app, Boolean approval) {
+	public boolean updateBabySitterApproval(Appointment app, Boolean approval) {
 		BabysitterDAOImpl daoObj = new BabysitterDAOImpl();
-		if(app.getStatus() == AppointmentStatus.Pending) {
-			if (approval) {
-				app.setStatus(AppointmentStatus.Accepted);
-			} else {
-				app.setStatus(AppointmentStatus.Rejected);
-			}
-			daoObj.saveAppointment(app);
+		if (approval) {
+			app.setStatus(AppointmentStatus.Accepted);
+		} else {
+			app.setStatus(AppointmentStatus.Rejected);
 		}
+		boolean success = daoObj.saveAppointment(app);
+		return success;
+	}
+	
+	public Parent getParentInformation(String parentID) {
+		// TODO Auto-generated method stub
+		BabysitterDAOImpl daoObj = new BabysitterDAOImpl();
+		return daoObj.getParentInformation(parentID);
 	}
 
 	public String getSsn() {

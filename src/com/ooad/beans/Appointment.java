@@ -7,7 +7,8 @@ public class Appointment {
 	private AppointmentStatus status;
 	private Parent parent;
 	private BabySitter babysitter;
-
+	private PaymentStatus paymentStatus;
+	
 	public AppointmentStatus getStatus() {
 		return status;
 	}
@@ -46,5 +47,16 @@ public class Appointment {
 
 	public void setParent(Parent parent) {
 		this.parent = parent;
+	}
+
+	public PaymentStatus getPaymentStatus() {
+		return paymentStatus;
+	}
+
+	public void setPaymentStatus(PaymentStatus paymentStatus) {
+		this.paymentStatus = paymentStatus;
 	}	
+	
+	
+	
 }

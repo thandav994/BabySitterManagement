@@ -1,3 +1,4 @@
+<%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
 	<title></title>
@@ -7,105 +8,9 @@
 	<link rel="stylesheet" type="text/css" href="css/bootstrap.css">
 	<!-- <link rel="stylesheet" type="text/css" href="materialize/css/materialize.css"> -->
 	<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
-	<script type="text/javascript" src="js/angular.min.js"></script>
      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
 <!-- <script src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-1.0.3.js"></script>-->
 	<link rel="stylesheet" type="text/css" href="css/MyCss.css">
-	<script>
-		var app = angular.module("MyApp", []); 
-		app.controller("MyCtrl", function($scope, $http, $timeout) {			
-			$scope.BooksList = function(Search){
-				// console.log(Search);
-				if(Search == ""){
-					// console.log("null");
-					$scope.Books = null;
-				}
-				else{
-					// console.log(Search);
-					$http.post('php/BooksList.php?Search='+ Search).then(function(data){
-					// console.log(data);
-					$scope.Books = data.data;				
-					console.log($scope.Books);
-				});
-				}
-			}	
-			$scope.CheckBorrowerId = function(BorrowerId, BookId){
-				// console.log(BorrowerId);
-				$http.post('php/CheckBorrowerId.php?BorrowerId=' + BorrowerId).then(function(data){
-					// console.log(data.data);
-					$scope.Borrower = data.data;
-					console.log($scope.Borrower);					
-					if($scope.Borrower == 'no one'){
-						console.log('there is no one with this name');
-						$scope.ErrorMessageBorrowerId = "Enter a Valid Borrower Id";
-					}
-					else{
-						$scope.ErrorMessageBorrowerId='';
-						console.log('there is one guy');
-						$scope.CheckBorrowerLoans(BorrowerId, BookId);
-						// $scope.BorrowBook(BorrowerId, BookId);
-					}
-				});
-			}
-			$scope.CheckAvailability = function(BookId){
-				// console.log(BookId);
-				$http.post('php /CheckAvailability.php?BookId='+BookId).then(function(data){
-					console.log('in the Availability function');
-					console.log(data.data);
-					$scope.Status = data.data;
-					// $scope.CheckInDate = data.data[0].DateIn;
-					// console.log($scope.CheckInDate);
-					if($scope.Status == 'Available'){
-						$scope.ErrorMessageBorrowerId='';
-						$scope.BookStatus = "Available";
-						console.log('Great the Book is Available');
-					}
-					if($scope.Status=='Not Available'){
-						$scope.ErrorMessageBorrowerId='';
-						$scope.BookStatus = "Not Available";
-						console.log('sorry the book is not Available');
-					}
-				})
-			}
-			$scope.BorrowBook = function(BorrowerId, BookId){
-				console.log("In the borrow book fucntion");
-				console.log(BookId, BorrowerId);
-				$http.post('php/BorrowBook.php?BookId='+ BookId+'&BorrowerId='+BorrowerId).then(function(data){
-					console.log(data.data);
-					$scope.CheckAvailability(BookId);
-					$scope.ErrorMessage="";
-					$scope.ErrorMessageBorrowerId='';
-					$scope.BorrowBookMessage = "Great ! Now the Book is Checked Out for Borrower Id "+ BorrowerId;
-				});
-			}
-			$scope.CloseModal = function(){
-				$scope.BorrowBookMessage = "";
-				$scope.ErrorMessage = "";
-				$scope.ErrorMessageBorrowerId='';
-			}
-			$scope.CheckBorrowerLoans = function(BorrowerId, BookId){
-				console.log('In the loans function');
-				console.log(BorrowerId, BookId);
-				$http.post('php/CheckBorrowersLoans.php?BorrowerId='+BorrowerId).then(function(data){
-					$scope.Num = data.data;
-					// console.log($scope.Num[0].NumberOfBooks);
-					if($scope.Num[0].NumberOfBooks >= 3){
-						$scope.ErrorMessageBorrowerId='';
-						console.log('the id has more that or equal to 3 books cant provide more - '+ $scope.Num[0].NumberOfBooks);
-						$scope.ErrorMessage = "Can't Provide more Books as the Borrower's Id already has 3 books or more"
-					}
-					else{
-						$scope.ErrorMessageBorrowerId='';
-						console.log("seems that the borrower does not have more that or equal to 3 books, have fun here is your book");
-						$scope.BorrowBook(BorrowerId, BookId);
-					}
-				})
-			}
-			// $scope.BooksList();		
-		});
-	</script>
-    
-    <style>
     
      <style>
         
@@ -281,17 +186,18 @@ border-bottom:1px solid #dbdbdb;
     
 </head>
 
-<body ng-app="MyApp" ng-controller="MyCtrl" style=" overflow: auto;height: 100%" ng-cloak>
+<body style=" overflow: auto;height: 100%">
 	<!--Navigation bar-->
+	  <!--Navigation bar-->
 	  <div class="nav">
       <div class="container">
         <ul class="pull-left">
           
-          <li><a href="#">Home</a></li>
+          <li><a href="/BabySitterManagement/sitter_home">Home</a></li>
         </ul>
         <ul class="pull-right">
-            <li><b>Name</b></li>
-          <li><a href="#">Sign Out</a></li>
+          <li><b>${sitter.firstName}</b></li>
+          <li><a href="/BabySitterManagement/login">Sign Out</a></li>
           <li><a href="#">Help</a></li>
         </ul>
       </div>
@@ -299,8 +205,8 @@ border-bottom:1px solid #dbdbdb;
     <!--Body-->
     <!-- background-image: url('Images/IndexPage.jpg');height: 100%;background-position: center;background-repeat: all;;background-size: cover; -->
     
-       <div class="panel-body">
-<center>
+       <!-- <div class="panel-body">
+		<center>
             <form class="form-inline">
                 <div class="form-group">
                     
@@ -311,101 +217,55 @@ border-bottom:1px solid #dbdbdb;
                  <input type="submit" value="Search" name=" " class="btn btn-primary" ng-click="BooksList(Search);show==1"/>
                 </div>
             </form>
-        </center></div>
+        </center></div> -->
     
   
   
-    		<table class="table table-striped table-hover table-bordered" style="background-color: white">
+    	<table class="table table-striped table-hover table-bordered" style="background-color: white">
 	        	<thead>
 	        		<tr>
 	        			<th class="text-center">ID</th>
+	        			<th class="text-center">Date</th>
 			        	<th class="text-center">Name</th>
-			        	<th class="text-center">Date</th> 	
-			        	
+			        	<th class="text-center">Status/More Options</th>
 			        	
 	        		</tr>
 	        	</thead>
 	        	<tbody>
-	        		<tr ng-repeat="book in Books |filter:Search">
-	        			<td><img ng-src="{{book.CoverUrl}}" class="img-responsive center-block" style="max-height: 100px;max-width: 100px" /></td>
-	        			<td class="text-center">{{book.BookName}}</td>
-	        			<td class="text-center">{{book.AuthorName}}</td>
-	        			
-	        			<td>
-	        				<button class="btn btn-primary btn-block" data-toggle="modal" data-target="#BorrowModal{{$index}}" ng-click="CheckAvailability(book.ISBN)">Info</button>
-	        				<div id="BorrowModal{{$index}}" class="modal fade" role="dialog">
-							  <div class="modal-dialog">
-
-							    <!-- Modal content-->
-							    <div class="modal-content">
-							      <div class="modal-header">
-							        <button type="button" class="close" data-dismiss="modal">&times;</button>
-							        <h4 class="modal-title">Parent Information</h4>
-							      </div>
-							      <div class="modal-body">
-							       <div class="row">
-							       	<div class="col-lg-4 col-md-4 col-sm-4">
-							       		<img ng-src="{{book.CoverUrl}}" class="img-responsive center-block"/>
-							       	</div>
-							       	<div class="col-lg-8 col-md-8 col-sm-8">
-							       		
-                                        <form action="add data to table and return here" method="post">
-                                            
-                                        <p><b>Date</b>  </p>
-                                        <p><b>Name</b> </p>
-							       		<p><b>Kid's Gender</b> </p>
-							       		<p><b>Kid's Age</b> </p>
-							       		<p><b>Additional Info</b>  </p>
-                                        <p><b>Special Request</b>  </p>
-                                        
-                                        </form>
-                                        
-                                        
-                                        
-                                        
-							       		<div class="row" ng-if="BookStatus=='Available'">
-							       			
-							       			<div class="col-lg-4 col-md-4"><button class="btn btn-default" ng-click="CheckBorrowerId(BorrowerId, book.ISBN)">Accept</button>
-                                            </div>
-							       		</div>
-							       		<div class="row" ng-if="BookStatus=='Available'">
-							       			
-							       			<div class="col-lg-4 col-md-4"><button class="btn btn-default" ng-click="CheckBorrowerId(BorrowerId, book.ISBN)">Decline</button></div>
-							       		</div>
-							       		
-							       		</div>
-							       </div>						      
-							      </div>
-							      <div class="modal-footer">
-							        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click='CloseModal()'>Close</button>
-							      </div>
-							    </div>
-
-							  </div>
-							</div>
-	        			</td>	        			
-	        		</tr>
+	        		<c:forEach var="appointment" varStatus="status" items="${appointments}">
+					    <tr>
+					    <td class="text-center"><option value ="10"><c:out value="${appointment.id}"/></option></td>
+					    <td class="text-center"><option value ="10"><c:out value="${appointment.appointmentDate}"/></option></td>
+					    <td class="text-center"><option value ="10"><c:out value="${appointment.parent.firstName} ${appointment.parent.lastName}"/></option></td>
+					    <c:if test = "${appointment.status == 'Pending'}">
+					    <td><a class="btn btn-primary btn-block" href="<c:url value='/getParentInformation?appointmentID=${appointments[status.index].id}&parentID=${appointments[status.index].parent.email}'/>" >View and update</a></td>
+					    </c:if>
+					    <c:if test = "${appointment.status != 'Pending'}">
+					    <td class="text-center"><option value ="10"><c:out value="${appointment.status}"/></option></td>
+					    </c:if>
+					    </tr>
+					</c:forEach>
 	        	</tbody> 
 	        	<tfoot>
 	        	</tfoot>      	
-	        </table>	
+	    </table>	
+	   <center><h3>${errorMessage}</h3></center>
 	   
-                
-        
-  <div class="row">
+	    
+         <div class="row">
          <div class="col-md-4">
            <div class="thumbnail">
-			<img src="Images/bs6.jpg">
+			<img src="${pageContext.request.contextPath}/resources/Images/bs6.jpg">
            </div>
          </div>  
          <div class="col-md-4">
            <div class="thumbnail">
-             <img src="Images/bs5.jpg">
+             <img src="${pageContext.request.contextPath}/resources/Images/bs5.jpg">
             </div>
         </div>    
          <div class="col-md-4">
             <div class="thumbnail">
-             <img src="Images/bs1.png">
+             <img src="${pageContext.request.contextPath}/resources/Images/bs1.png">
            </div>
          </div>  
         </div>

@@ -48,6 +48,7 @@ public class LoginController {
 	
 	@RequestMapping(value= "/login", method = RequestMethod.POST)
 	public ModelAndView login(@ModelAttribute("login")Login login) {
+		LoginDAOImpl loginDAO = new LoginDAOImpl();
 		ModelAndView modelAndView = null;
 			if(login.getCategory().contentEquals("parent")) {
 				Parent parent = new Parent();

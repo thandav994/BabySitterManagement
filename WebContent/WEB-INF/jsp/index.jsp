@@ -86,7 +86,7 @@
 }
 
 .jumbotron {
-  background-image:url("resources/Images/bs1.jpg");
+  background-image:url("/resources/Images/bs1.png");
   height: 500px;
   background-repeat: no-repeat;
   background-size: 100px 60px;
@@ -144,7 +144,7 @@ border-bottom:1px solid #dbdbdb;
       </style>
   </head>
 
-  <body>
+  <body background="${pageContext.request.contextPath}/resources/Images/background.jpg">
     <div class="nav">
       <div class="container">
         <ul class="pull-left">

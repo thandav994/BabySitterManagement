@@ -10,11 +10,11 @@ import javax.persistence.Table;
 @Table(name="reviews")
 public class ReviewsEntity {
 	@Id
-	private Integer reviewID;
+	private int reviewID;
 	
 	@OneToOne
 	@JoinColumn(name = "sitterID")
-	private BabySitterEntity babysitter;
+	private BabySitterEntity sitter;
 	
 	@OneToOne
 	@JoinColumn(name = "parentID")
@@ -22,12 +22,12 @@ public class ReviewsEntity {
 	
 	private Integer rating;
 
-	public BabySitterEntity getBabysitter() {
-		return babysitter;
+	public BabySitterEntity getSitter() {
+		return sitter;
 	}
 
-	public void setBabysitter(BabySitterEntity babysitter) {
-		this.babysitter = babysitter;
+	public void setSitter(BabySitterEntity babysitter) {
+		this.sitter = babysitter;
 	}
 
 	public ParentEntity getParent() {
@@ -38,11 +38,11 @@ public class ReviewsEntity {
 		this.parent = parent;
 	}
 
-	public Integer getRating() {
+	public int getRating() {
 		return rating;
 	}
 
-	public void setRating(Integer rating) {
+	public void setRating(int rating) {
 		this.rating = rating;
 	}
 	

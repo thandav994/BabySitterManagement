@@ -84,27 +84,64 @@ border-bottom:1px solid #dbdbdb;
       <div class="container">
         <ul class="pull-left">
           
-          <li><a href="#">Home</a></li>
+        <li><a href="/BabySitterManagement/parent_home">Home</a></li>
         </ul>
         <ul class="pull-right">
-          <li><b>${sitter.firstName}</b></li>
+          <li><b>${parent.firstName}</b></li>
+          <li><a href="/BabySitterManagement/getAppointmentsList">View Orders</a></li>
           <li><a href="/BabySitterManagement/login">Sign Out</a></li>
           <li><a href="#">Help</a></li>
         </ul>
       </div>
     </div>
 
-    <div class="jumbotron">
-      <div class="container">
-        <h1>
-        <p>We care for you while we care for our kids.Excited?</p></h1>
-        
-          <h2>
-     <p> <a href="/BabySitterManagement/getBabySitterAppointmentsList">Available jobs</a></h2></p>
+     <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title"><center>Request this Babysitter</center></h4>
       </div>
-    </div> 
+      <div class="modal-body">
+       <div class="row">
+       	<div class="col-lg-8 col-md-8 col-sm-8">
+       		
+            <p><b>Date</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${appointmentDate}</p>
+            <p><b>Name</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>${sitter.firstName} ${sitter.lastName}</span></p>
+       		<p><b>Gender</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>${sitter.gender}</span></p>
+       		<p><b>Hourly Pay</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>${sitter.hourlyPay}</span></p>
+       		<p><b>Experience</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>${sitter.experience}</span></p>
+            <p><b>Bio</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>${sitter.bio}</span></p>
+            <p><b>Rating</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>${sitter.rating}</span></p>
+                                 
+  
+       		<div class="row">
+       			<form method="post" action="/BabySitterManagement/bookAppointment">
+       			<div class="col-lg-8 col-md-8"><input type="textarea" class="form-control" placeholder="Special Request" name="specialRequests"/></div>
+       			<div class="col-lg-4 col-md-4"><button class="btn btn-default" type="submit" href="/BabySitterManagement/bookAppointment">Request</button></div>
+       			</form>
+       		</div>
+                                 
+             <br><br>
+       		 <form method="post" action="/BabySitterManagement/rateaSitter" >
+                 <p><b>Your Rating: <select name="rating">
+                     <option value="1">1 Star</option>
+                     <option value="2">2 Star</option>
+                     <option value="3">3 Star</option>
+                     <option value="4">4 Star</option>
+                     <option value="5">5 Star</option>
+                     </select>     </b>  </p>
+                      <div class="col-lg-4 col-md-4"><button class="btn btn-default" type="submit">Submit Rating</button></div>
+                 </form>
+       		</div>
+       </div>						      
+      </div>
+      <center><h3>${successMessage}</h3></center>
+	<center><h3>${errorMessage}</h3></center>
+    </div>
     
-    <div class="row">
+    <div class="neighborhood-guides">
+      <div class="container">
+      
+       <div class="row">
          <div class="col-md-4">
            <div class="thumbnail">
 			<img src="${pageContext.request.contextPath}/resources/Images/bs6.jpg">

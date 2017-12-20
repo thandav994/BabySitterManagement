@@ -183,6 +183,7 @@ public class LoginDAOImpl implements LoginDAO{
 		Query<ParentEntity> query2 = session.createQuery("from ParentEntity parent where parent.login.user_id = :userId");
         query2.setParameter("userId", parent.getEmail());
 		List<ParentEntity> parents = query2.getResultList();
+		Login login = null ;
 		if(!parents.isEmpty()) {
 			ParentEntity parentEntity = parents.get(0);
 			parent.setFirstName(parentEntity.getFirstName());
@@ -193,18 +194,18 @@ public class LoginDAOImpl implements LoginDAO{
 			parent.setPhone(parentEntity.getPhone().toString());
 			parent.setSpecial_requests(parentEntity.getSpecial_requests());
 			parent.setZipcode(parentEntity.getZipcode());
-		}
-		
-		// Checking if the password is right
-		LoginEntity loginEntity = session.get(LoginEntity.class, parent.getEmail());
-		Login login = null ;
-		if(loginEntity !=null) {
-			login = new Login();
-			login.setPassword(loginEntity.getPass());
+			
+			// Checking if the password is right
+			LoginEntity loginEntity = session.get(LoginEntity.class, parent.getEmail());
+			
+			if(loginEntity !=null) {
+				login = new Login();
+				login.setPassword(loginEntity.getPass());
+			}
 		}
 		session.close();
 		sessionFactory.close();
-
+		
 		return login;
 	}
 	
@@ -222,6 +223,7 @@ public class LoginDAOImpl implements LoginDAO{
 		Query<BabySitterEntity> query2 = session.createQuery("from BabySitterEntity sitter where sitter.login.user_id = :userId");
         query2.setParameter("userId", sitter.getEmail());
 		List<BabySitterEntity> sitters = query2.getResultList();
+		Login login = null ;
 		if(!sitters.isEmpty()) {
 			BabySitterEntity sitterEntity = sitters.get(0);
 			sitter.setFirstName(sitterEntity.getFirstName());
@@ -235,15 +237,15 @@ public class LoginDAOImpl implements LoginDAO{
 			sitter.setBio(sitterEntity.getBio());
 			sitter.setHourlyPay(sitterEntity.getHourlypay());
 			sitter.setSsn(sitterEntity.getSsn());
+			
+			// Checking if the password is right
+			LoginEntity loginEntity = session.get(LoginEntity.class, sitter.getEmail());
+			if(loginEntity !=null) {
+				login = new Login();
+				login.setPassword(loginEntity.getPass());
+			}
 		}
 		
-		// Checking if the password is right
-		LoginEntity loginEntity = session.get(LoginEntity.class, sitter.getEmail());
-		Login login = null ;
-		if(loginEntity !=null) {
-			login = new Login();
-			login.setPassword(loginEntity.getPass());
-		}
 		session.close();
 		sessionFactory.close();
 

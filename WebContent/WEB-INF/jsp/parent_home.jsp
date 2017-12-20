@@ -1,3 +1,4 @@
+<%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
 	<title></title>
@@ -7,106 +8,9 @@
 	<link rel="stylesheet" type="text/css" href="css/bootstrap.css">
 	<!-- <link rel="stylesheet" type="text/css" href="materialize/css/materialize.css"> -->
 	<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
-	<script type="text/javascript" src="js/angular.min.js"></script>
      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
 <!-- <script src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-1.0.3.js"></script>-->
 	<link rel="stylesheet" type="text/css" href="css/MyCss.css">
-	<script>
-		var app = angular.module("MyApp", []); 
-		app.controller("MyCtrl", function($scope, $http, $timeout) {			
-			$scope.BooksList = function(Search){
-				// console.log(Search);
-				if(Search == ""){
-					// console.log("null");
-					$scope.Books = null;
-				}
-				else{
-					// console.log(Search);
-					$http.post('php/BooksList.php?Search='+ Search).then(function(data){
-					// console.log(data);
-					$scope.Books = data.data;				
-					console.log($scope.Books);
-				});
-				}
-			}	
-			$scope.CheckBorrowerId = function(BorrowerId, BookId){
-				// console.log(BorrowerId);
-				$http.post('php/CheckBorrowerId.php?BorrowerId=' + BorrowerId).then(function(data){
-					// console.log(data.data);
-					$scope.Borrower = data.data;
-					console.log($scope.Borrower);					
-					if($scope.Borrower == 'no one'){
-						console.log('there is no one with this name');
-						$scope.ErrorMessageBorrowerId = "Enter a Valid Borrower Id";
-					}
-					else{
-						$scope.ErrorMessageBorrowerId='';
-						console.log('there is one guy');
-						$scope.CheckBorrowerLoans(BorrowerId, BookId);
-						// $scope.BorrowBook(BorrowerId, BookId);
-					}
-				});
-			}
-			$scope.CheckAvailability = function(BookId){
-				// console.log(BookId);
-				$http.post('php /CheckAvailability.php?BookId='+BookId).then(function(data){
-					console.log('in the Availability function');
-					console.log(data.data);
-					$scope.Status = data.data;
-					// $scope.CheckInDate = data.data[0].DateIn;
-					// console.log($scope.CheckInDate);
-					if($scope.Status == 'Available'){
-						$scope.ErrorMessageBorrowerId='';
-						$scope.BookStatus = "Available";
-						console.log('Great the Book is Available');
-					}
-					if($scope.Status=='Not Available'){
-						$scope.ErrorMessageBorrowerId='';
-						$scope.BookStatus = "Not Available";
-						console.log('sorry the book is not Available');
-					}
-				})
-			}
-			$scope.BorrowBook = function(BorrowerId, BookId){
-				console.log("In the borrow book fucntion");
-				console.log(BookId, BorrowerId);
-				$http.post('php/BorrowBook.php?BookId='+ BookId+'&BorrowerId='+BorrowerId).then(function(data){
-					console.log(data.data);
-					$scope.CheckAvailability(BookId);
-					$scope.ErrorMessage="";
-					$scope.ErrorMessageBorrowerId='';
-					$scope.BorrowBookMessage = "Great ! Now the Book is Checked Out for Borrower Id "+ BorrowerId;
-				});
-			}
-			$scope.CloseModal = function(){
-				$scope.BorrowBookMessage = "";
-				$scope.ErrorMessage = "";
-				$scope.ErrorMessageBorrowerId='';
-			}
-			$scope.CheckBorrowerLoans = function(BorrowerId, BookId){
-				console.log('In the loans function');
-				console.log(BorrowerId, BookId);
-				$http.post('php/CheckBorrowersLoans.php?BorrowerId='+BorrowerId).then(function(data){
-					$scope.Num = data.data;
-					// console.log($scope.Num[0].NumberOfBooks);
-					if($scope.Num[0].NumberOfBooks >= 3){
-						$scope.ErrorMessageBorrowerId='';
-						console.log('the id has more that or equal to 3 books cant provide more - '+ $scope.Num[0].NumberOfBooks);
-						$scope.ErrorMessage = "Can't Provide more Books as the Borrower's Id already has 3 books or more"
-					}
-					else{
-						$scope.ErrorMessageBorrowerId='';
-						console.log("seems that the borrower does not have more that or equal to 3 books, have fun here is your book");
-						$scope.BorrowBook(BorrowerId, BookId);
-					}
-				})
-			}
-			// $scope.BooksList();		
-		});
-	</script>
-    
-    <style>
-    
      <style>
         
         .nav a {
@@ -281,18 +185,18 @@ border-bottom:1px solid #dbdbdb;
     
 </head>
 
-<body ng-app="MyApp" ng-controller="MyCtrl" style=" overflow: auto;height: 100%" ng-cloak>
+<body style=" overflow: auto;height: 100%" >
 	<!--Navigation bar-->
 	  <div class="nav">
       <div class="container">
         <ul class="pull-left">
           
-          <li><a href="#">Home</a></li>
+          <li><a href="/BabySitterManagement/sitter_home">Home</a></li>
         </ul>
         <ul class="pull-right">
-            <li><b>Name</b></li>
-            <li><a href="parent_notifi.jsp">View Orders</a></li>
-          <li><a href="#">Sign Out</a></li>
+          <li><b>${parent.firstName}</b></li>
+          <li><a href="/BabySitterManagement/getAppointmentsList">View Orders</a></li>
+          <li><a href="/BabySitterManagement/login">Sign Out</a></li>
           <li><a href="#">Help</a></li>
         </ul>
       </div>
@@ -301,52 +205,53 @@ border-bottom:1px solid #dbdbdb;
     <!-- background-image: url('Images/IndexPage.jpg');height: 100%;background-position: center;background-repeat: all;;background-size: cover; -->
     
        <div class="panel-body">
-<center>
-            <form class="form-inline">
+		<center>
+            <form class="form-inline" method="post" action="/BabySitterManagement/Listofbabysitters">
                 <div class="form-group">
                     
-                    <input type="" name="name" ng-model="Search" class="form-control" placeholder="Name">
+                    <input type="text" name="name" class="form-control" placeholder="Name">
                 </div>
                 <div class="form-group">
             
-            <input type="text" name="zipcode" class="form-control" id="zip" placeholder="ZIP">
+            <input type="text" name="zipCode" class="form-control"  placeholder="ZIP">
           </div>
             
              <div class="form-group">
             
-            <input type="date" name="date" class="form-control" id="date" >
+            <input type="date" name="appointmentDate" class="form-control" required="required">
           </div>
             
           <div class="form-group">
             
-            <select class="form-control" name="gender" id="type1">
+            <select class="form-control" name="gender" >
               
-              <option value="">Male</option>
-              <option value="">Female</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
             </select>
           </div>
           <div class="form-group">
             
             <div class="input-group">
-              <div class="input-group-addon" id="basic-addon1">$</div>
-              <input type="text" class="form-control" name="pricefrom" aria-describedby="basic-addon1" placeholder="Min Pay">
+              <div class="input-group-addon" >$</div>
+              <input type="number" class="form-control" name="minPay" aria-describedby="basic-addon1" placeholder="Min Pay">
             </div>
           </div>
           <div class="form-group">
             
             <div class="input-group">
-              <div class="input-group-addon" id="basic-addon2">$</div>
-              <input type="text" class="form-control" name="priceto" aria-describedby="basic-addon1" placeholder="Max Pay">
+              <div class="input-group-addon" >$</div>
+              <input type="number" class="form-control" name="maxPay" aria-describedby="basic-addon1" placeholder="Max Pay">
             </div>
           </div>
             
             
              
                 <div class="form-group">
-                 <input type="submit" value="Search" name=" " class="btn btn-primary" ng-click="BooksList(Search);show==1"/>
+                 <input type="submit" value="Search" name="submit" class="btn btn-primary"/>
                 </div>
             </form>
-        </center></div>
+        </center>
+        </div>
     
   
   
@@ -355,84 +260,23 @@ border-bottom:1px solid #dbdbdb;
 	        		<tr>
 	        			<th class="text-center">ID</th>
 			        	<th class="text-center">Name</th>
-			        	<th class="text-center">Availability</th> 	
 			        	<th class="text-center">More Options</th>
 			        	
 	        		</tr>
 	        	</thead>
 	        	<tbody>
-	        		<tr ng-repeat="book in Books |filter:Search">
-	        			<td><img ng-src="{{book.CoverUrl}}" class="img-responsive center-block" style="max-height: 100px;max-width: 100px" /></td>
-	        			<td class="text-center">{{book.BookName}}</td>
-	        			<td class="text-center">{{book.AuthorName}}</td>
-	        			
-	        			<td>
-	        				<button class="btn btn-primary btn-block" data-toggle="modal" data-target="#BorrowModal{{$index}}" ng-click="CheckAvailability(book.ISBN)">Request</button>
-	        				<div id="BorrowModal{{$index}}" class="modal fade" role="dialog">
-							  <div class="modal-dialog">
-
-							    <!-- Modal content-->
-							    <div class="modal-content">
-							      <div class="modal-header">
-							        <button type="button" class="close" data-dismiss="modal">&times;</button>
-							        <h4 class="modal-title">Request this Babysitter</h4>
-							      </div>
-							      <div class="modal-body">
-							       <div class="row">
-							       	<div class="col-lg-4 col-md-4 col-sm-4">
-							       		<img ng-src="{{book.CoverUrl}}" class="img-responsive center-block"/>
-							       	</div>
-							       	<div class="col-lg-8 col-md-8 col-sm-8">
-							       		
-                                        <form action="add data to table and return here" method="post">
-                                            
-                                        <p><b>Date</b>  </p>
-                                        <p><b>Name</b> </p>
-							       		<p><b>Gender</b> </p>
-							       		<p><b>Hourly Pay</b> </p>
-							       		<p><b>Experience</b>  </p>
-                                        <p><b>Bio</b>  </p>
-                                        <p><b>Rating</b>  </p>
-                                        
-                                        
-                                        </form>
-                                        
-                                       
-                                        
-                                        
-							       		<div class="row" ng-if="BookStatus=='Available'">
-							       			<div class="col-lg-8 col-md-8"><input type="textarea" class="form-control" placeholder="Special Request" ng-model="BorrowerId"/></div>
-							       			<div class="col-lg-4 col-md-4"><button class="btn btn-default" ng-click="CheckBorrowerId(BorrowerId, book.ISBN)">Request</button></div>
-							       		</div>
-                                        
-                                        <br><br>
-							       		 <form action="/BabySitterManagement/rateaSitter" method="post">
-                                        <p><b>Your Rating: <select>
-                                            <option value="1">1 Star</option>
-                                            <option value="2">2 Star</option>
-                                            <option value="3">3 Star</option>
-                                            <option value="4">4 Star</option>
-                                            <option value="5">5 Star</option>
-                                            </select>     </b>  </p>
-                                             <div class="col-lg-4 col-md-4"><button class="btn btn-default" ng-click="CheckBorrowerId(BorrowerId, book.ISBN)">Submit Rating</button></div>
-                                        </form>
-							       		</div>
-							       </div>						      
-							      </div>
-							      <div class="modal-footer">
-							        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click='CloseModal()'>Close</button>
-							      </div>
-							    </div>
-
-							  </div>
-							</div>
-	        			</td>	        			
-	        		</tr>
+	        		<c:forEach var="sitter" varStatus="status" items="${sitters}">
+					    <tr>
+					    <td class="text-center"><option value ="10"><c:out value="${sitter.email}"/></option></td>
+					    <td class="text-center"><option value ="10"><c:out value="${sitter.firstName} ${sitter.lastName}"/></option></td>
+					    <td><a class="btn btn-primary btn-block" href="<c:url value='/getSitterInformation?sitterID=${sitters[status.index].email}'/>" >View Sitter Info</a></td>
+					    </tr>
+					</c:forEach>
 	        	</tbody> 
 	        	<tfoot>
 	        	</tfoot>      	
 	        </table>	
-	   
+	   <center><h3>${errorMessage}</h3></center>
                 
         
   <div class="row">

@@ -24,10 +24,9 @@ create table if not exists babysitters(
     phone bigint not null,
     experience float not null,
     bio text not null,
-    reviewID int not null,
+    rating int not null,
     primary key(sitterID),
     constraint fk_sitters foreign key(emailID) references login(user_id) on delete cascade on update restrict
-    constraint fk_reviews foreign key(reviewID) references reviews(reviewID) on delete cascade on update restrict
 )ENGINE= InnoDB DEFAULT CHARSET=utf8 ;
 
 

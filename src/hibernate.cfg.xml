@@ -27,6 +27,7 @@
    <mapping class="com.ooad.entities.ParentEntity"/>
    <mapping class="com.ooad.entities.BabySitterEntity"/>
    <mapping class="com.ooad.entities.AppointmentEntity"/>
+   <mapping class="com.ooad.entities.ReviewsEntity"/>
 
 </session-factory>
 </hibernate-configuration>

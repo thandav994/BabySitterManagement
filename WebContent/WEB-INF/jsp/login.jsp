@@ -144,7 +144,7 @@ border-bottom:1px solid #dbdbdb;
       </style>
   </head>
 
-  <body>
+  <body background="${pageContext.request.contextPath}/resources/Images/background.jpg">
     <div class="nav">
       <div class="container">
         <ul class="pull-left">
@@ -186,6 +186,7 @@ border-bottom:1px solid #dbdbdb;
             <br><br>
             
                  </center>
+                 <center><h3>${errorMessage}</h3></center>
         </div>
     </div>
     

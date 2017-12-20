@@ -10,6 +10,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.ooad.beans.PaymentStatus;
+
 @Entity
 @Table(name = "appointments")
 
@@ -19,8 +21,8 @@ public class AppointmentEntity {
 	private int appointmentid;
 	
 	@Temporal(TemporalType.DATE)
-	private Date date;
-	private int status;
+	private Date appointmentDate;
+	private int appointmentStatus;
 	
 	@OneToOne
 	@JoinColumn(name = "sitterID")
@@ -29,7 +31,7 @@ public class AppointmentEntity {
 	@OneToOne
 	@JoinColumn(name = "parentID")
 	private ParentEntity parent;
-
+	private Integer paymentStatus;
 	public int getId() {
 		return appointmentid;
 	}
@@ -55,18 +57,26 @@ public class AppointmentEntity {
 	}
 
 	public Date getDate() {
-		return date;
+		return appointmentDate;
 	}
 	
 	public void setDate(Date date) {
-		this.date = date;
+		this.appointmentDate = date;
 	}
 
 	public int getStatus() {
-		return status;
+		return appointmentStatus;
 	}
 
 	public void setStatus(int status) {
-		this.status = status;
+		this.appointmentStatus = status;
+	}
+
+	public Integer getPaymentStatus() {
+		return paymentStatus;
+	}
+
+	public void setPaymentStatus(Integer paymentStatus) {
+		this.paymentStatus = paymentStatus;
 	}
 }

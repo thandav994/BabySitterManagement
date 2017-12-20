@@ -16,6 +16,7 @@ import com.ooad.beans.Appointment;
 import com.ooad.beans.AppointmentStatus;
 import com.ooad.beans.BabySitter;
 import com.ooad.beans.Parent;
+import com.ooad.beans.PaymentStatus;
 import com.ooad.entities.AppointmentEntity;
 import com.ooad.entities.BabySitterEntity;
 import com.ooad.entities.ParentEntity;
@@ -23,18 +24,25 @@ import com.ooad.entities.ReviewsEntity;
 
 public class ParentsFunctionalityDAOImpl implements ParentsFunctionalityDAO {
 	
-	public ArrayList<BabySitter> getListofBabySitters(String appointmentDate) throws ParseException {
+	public ArrayList<BabySitter> getListofBabySitters(String appointmentDate, String name, String gender) throws ParseException {
 		// TODO Auto-generated method stub
 		SessionFactory sessionFactory = new Configuration()
 	               .configure("hibernate.cfg.xml").buildSessionFactory();
 		
 		Session session = sessionFactory.openSession();
 		
+		//Checking for null values
+		if(name == null) {
+			name = "?";
+		}
+		
 		@SuppressWarnings("unchecked")
-		Query<BabySitterEntity> query = session.createQuery("from BabySitterEntity sitter where sitter.sitterID not in (select a.babysitter.sitterID from AppointmentEntity a where a.startDate =:date)");
+		Query<BabySitterEntity> query = session.createSQLQuery("select * from babysitters where sitterID not in (select sitterID from appointments where appointmentDate =:date) and firstName like :name or lastName like :name and gender =:gender").addEntity(BabySitterEntity.class);
+//		Query("from BabySitterEntity sitter where sitter.sitterID not in (select a.babysitter.sitterID from AppointmentEntity a where a.appointmentdate =:date)");
 		Date appointmentDateFormatted = new SimpleDateFormat("yyyy-mm-dd", Locale.ENGLISH).parse(appointmentDate);
 		query.setParameter("date", appointmentDateFormatted);
-		
+		query.setParameter("name", "%"+name+"%");
+		query.setParameter("gender", gender);
 //		Criteria criteria = session.createCriteria(BabySitterEntity.class);
 //		if (appointmentDate != null) {
 //		    criteria.add(Expression.eq("category", category);
@@ -93,7 +101,13 @@ public class ParentsFunctionalityDAOImpl implements ParentsFunctionalityDAO {
 			sitter.setPhone(babysitterEntity.getPhone().toString());
 			sitter.setSsn(babysitterEntity.getSsn());
 			sitter.setZipcode(babysitterEntity.getZipcode());
-			sitter.setRating(babysitterEntity.getReview().getRating());
+			
+			Query<Float> query2 = session.createQuery("select avg(b.rating) from ReviewsEntity b where b.sitter.login.user_id =:sitterID");
+			query2.setParameter("sitterID", sitterID);
+			Float rating = query2.getSingleResult();
+			if(rating==null)
+				sitter.setRating(4);
+			else sitter.setRating(rating);
 			session.close();
 			return sitter;
 		}
@@ -113,7 +127,7 @@ public class ParentsFunctionalityDAOImpl implements ParentsFunctionalityDAO {
 			
 			session.beginTransaction();
 			AppointmentEntity appointmentEntity = new AppointmentEntity();
-			Date appointmentDateFormatted = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH).parse(appointment.getAppointmentDate());
+			Date appointmentDateFormatted = new SimpleDateFormat("yyyy-mm-dd", Locale.ENGLISH).parse(appointment.getAppointmentDate());
 			appointmentEntity.setDate(appointmentDateFormatted);
 			
 			Query<BabySitterEntity> query = session.createQuery("from BabySitterEntity b where b.login.user_id =:sitterID");
@@ -126,12 +140,14 @@ public class ParentsFunctionalityDAOImpl implements ParentsFunctionalityDAO {
 			ParentEntity parentEntity = query2.getSingleResult();
 			appointmentEntity.setParent(parentEntity);
 			appointmentEntity.setStatus(AppointmentStatus.Pending.ordinal());
+			appointmentEntity.setPaymentStatus(PaymentStatus.Pending.ordinal());
 			session.save(appointmentEntity);
 			
 			session.getTransaction().commit();
 			return true;
 		}
 		catch(Exception e) {
+			e.printStackTrace();
 			return false;
 		}
 	}
@@ -185,16 +201,19 @@ public class ParentsFunctionalityDAOImpl implements ParentsFunctionalityDAO {
 		
 		session.beginTransaction();
 		try {
-			@SuppressWarnings("unchecked")
-			Query<AppointmentEntity> query = session.createQuery("delete AppointmentEntity app where app.id =: appointmentID");
-			query.setParameter("appointmentID", appointmentID);
-			int result = query.executeUpdate();
+			AppointmentEntity appointment = session.get(AppointmentEntity.class, appointmentID);
+			session.delete(appointment);
 			session.getTransaction().commit();
+			session.close();
+			sessionFactory.close();
 			return true;
 		}
 		catch(Exception e) {
+			e.printStackTrace();
+			session.close();
+			sessionFactory.close();
 			return false;
-		}	
+		}
 	}
 	
 	public void saveAppointment(Appointment appointment) {
@@ -240,16 +259,43 @@ public class ParentsFunctionalityDAOImpl implements ParentsFunctionalityDAO {
 		ParentEntity parentEntity = query.getSingleResult();
 		review.setParent(parentEntity);
 		
+		
 		@SuppressWarnings("unchecked")
 		Query<BabySitterEntity> query2 = session.createQuery("from BabySitterEntity b where b.login.user_id =:sitterID");
-		query.setParameter("sitterID", sitter.getEmail());
+		query2.setParameter("sitterID", sitter.getEmail());
 		BabySitterEntity sitterEntity = query2.getSingleResult();
-		review.setBabysitter(sitterEntity);
+		review.setSitter(sitterEntity);
 		
-		session.save(review);
+		session.saveOrUpdate(review);
 		
 		session.getTransaction().commit();
 		success = true;
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			session.getTransaction().rollback();
+		}
+		finally {
+			session.close();
+			sessionFactory.close();
+			return success;
+		}
+	}
+
+	@SuppressWarnings("finally")
+	public boolean makePayment(Appointment appointment) {
+		// TODO Auto-generated method stub
+		SessionFactory sessionFactory = new Configuration()
+	               .configure("hibernate.cfg.xml").buildSessionFactory();
+		Session session = sessionFactory.openSession();
+		
+		session.beginTransaction();
+		boolean success = false;
+		try {
+			AppointmentEntity appointmentEntity = session.get(AppointmentEntity.class, appointment.getId());
+			appointmentEntity.setPaymentStatus(PaymentStatus.Completed.ordinal());
+			session.saveOrUpdate(appointmentEntity);
+			success=true;
 		}
 		catch(Exception e) {
 			e.printStackTrace();
